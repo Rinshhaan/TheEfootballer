@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - eFootball IDs</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Extra styles just for admin layout */
+        body { display: block; background: var(--bg-color); }
+        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;}
+    </style>
+</head>
+<body>
+    <div id="loginOverlay">
+        <h2 class="highlight" style="margin-bottom: 20px;">Admin Access</h2>
+        <input type="password" id="adminPass" class="form-control" style="max-width: 300px; margin-bottom: 10px;" placeholder="Enter Password">
+        <button onclick="checkPass()" class="btn btn-primary">Login</button>
+    </div>
+
+    <div class="admin-container" id="adminContent" style="display: none;">
+        <div class="admin-header">
+            <h2>Product Management</h2>
+            <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-house"></i> Go to Site</a>
+        </div>
+
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <h3 id="formTitle" style="margin-bottom: 20px; color: var(--accent-color);">Add New ID</h3>
+            <form id="productForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="title" class="form-control" required placeholder="e.g. Mega Account Level 100">
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="text" id="price" class="form-control" required placeholder="e.g. $50 USD">
+                </div>
+                <div class="form-group">
+                    <label>Short Description (shown on index card)</label>
+                    <input type="text" id="shortDesc" class="form-control" required placeholder="Brief summary...">
+                </div>
+                <div class="form-group">
+                    <label>Full Description (shown in modal)</label>
+                    <textarea id="fullDesc" class="form-control" required placeholder="Detailed account info..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Player Highlights (shown in modal)</label>
+                    <textarea id="playerInfo" class="form-control" placeholder="List top players (Messi, Ney...)"></textarea>
+                </div>
+                 <div class="form-group">
+                    <label>Media URLs (Images or .mp4 Videos) - Comma separated</label>
+                    <textarea id="mediaUrls" class="form-control" placeholder="https://link.to/image1.jpg, https://link.to/video.mp4" required></textarea>
+                    <small style="color: var(--text-muted);">Provide direct URLs to images or videos, separated by commas. The first one will be the thumbnail.</small>
+                     <div id="mediaPreview" class="media-preview-list"></div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                     <label style="margin:0;">Stock Out?</label>
+                    <input type="checkbox" id="stockOut" style="width: 20px; height: 20px;">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="saveBtn">Add Product</button>
+                <button type="button" class="btn" id="cancelBtn" style="display: none; background: #555; color: white;">Cancel Edit</button>
+            </form>
+        </div>
+
+        <h3 style="color: var(--accent-color);">Listed IDs</h3>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="adminProductTable">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // SUPER BASIC PASSWORD CHECK
+        // CHANGE THIS PASSWORD!
+        const correctPass = "admin123"; 
+
+        function checkPass() {
+            const input = document.getElementById('adminPass').value;
+            if(input === correctPass) {
+                document.getElementById('loginOverlay').style.display = "none";
+                document.getElementById('adminContent').style.display = "block";
+                localStorage.setItem("adminLoggedIn", "true");
+            } else {
+                alert("Wrong password");
+            }
+        }
+        // Keep logged in per session
+        if(localStorage.getItem("adminLoggedIn") === "true") {
+             document.getElementById('loginOverlay').style.display = "none";
+             document.getElementById('adminContent').style.display = "block";
+        }
+    </script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

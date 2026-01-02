@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eFootball ID Showcase</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="header-container">
+        <i class="fa-solid fa-gamepad controller-icon"></i>
+        <h1 class="main-title">eFOOTBALL <span class="highlight">ER</span></h1>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search IDs...">
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="product-grid" class="product-grid">
+            <p style="text-align:center; color: var(--text-muted);">Loading IDs...</p>
+        </div>
+    </main>
+
+    <footer class="footer-container">
+        <a href="https://wa.me/1234567890?text=I'm%20interested%20in%20an%20eFootball%20ID" target="_blank" class="whatsapp-btn">
+            <i class="fa-brands fa-whatsapp"></i> Contact on WhatsApp
+        </a>
+    </footer>
+
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal-btn" id="closeModal">&times;</span>
+            
+            <div class="carousel-container">
+                <button class="carousel-btn prev-btn" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <div id="carouselSlides">
+                    </div>
+                <button class="carousel-btn next-btn" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <div class="modal-details">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <p id="modalPrice" class="modal-price"></p>
+                
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p id="modalFullDesc"></p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Player Highlights</h3>
+                    <p id="modalPlayerInfo"></p>
+                </div>
+                 <div style="text-align: center; margin-top: 30px;">
+                    <a id="modalWaLink" href="#" target="_blank" class="whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Buy Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
