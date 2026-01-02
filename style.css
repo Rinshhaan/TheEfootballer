@@ -233,21 +233,12 @@ body {
 }
 
 /* --- Modal Carousel --- */
-.carousel-container {
-        position: relative;
-        width: 100%;
-        /* Max-height ensures the image doesn't take 100% of the screen */
-        max-height: 65vh; 
-        height: 400px; 
-        flex-shrink: 0;
-        background: #000;
-}
+
 
 .carousel-slide {
     width: 100%;
-    height: 100%;
+    height: auto;
     background: radial-gradient(circle, #161b2a 0%, #000 100%);
-    display: none;
 }
 
 .carousel-slide.active {
@@ -256,8 +247,9 @@ body {
 
 .carousel-slide img, .carousel-slide video {
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: contain;
+    display: block;
 }
 
 .carousel-btn {
@@ -278,7 +270,7 @@ body {
 
 .modal-details {
     padding: 25px;
-    padding-bottom: 40px; /* Extra space for comfortable thumb clicking */
+    padding-top: 15px; /* Extra space for comfortable thumb clicking */
 }
 
 .modal-title { font-size: 2rem; color: var(--accent-color); margin-bottom: 10px; }
@@ -390,15 +382,8 @@ video::-webkit-media-controls {
 
 /* Modal Improvements */
 
-.carousel-container {
-    height: 60vh; /* Responsive height */
-    background: #000;
-}
 
 @media (max-width: 600px) {
-    .carousel-container {
-        height: 35vh; /* Shorter for small phones */
-    }
     .modal-title { font-size: 1.4rem; }
 }
 
@@ -450,19 +435,10 @@ video::-webkit-media-controls {
     position: relative;
     width: 100%;
     height: auto; /* Let it scale with the image */
-    min-height: 200px;
-    max-height: 50vh; /* Limits image size so details are visible */
     background: #000;
     flex-shrink: 0; /* Prevents image from being crushed */
 }
 
-.carousel-slide img, 
-.carousel-slide video {
-    width: 100%;
-    height: 100%;
-    max-height: 50vh;
-    object-fit: contain; /* Shows full screenshot without cropping */
-}
 
 /* --- Details Section --- */
 .modal-details {
@@ -489,14 +465,3 @@ video::-webkit-media-controls {
     letter-spacing: 1px;
 }
 
-/* --- Mobile Specific Fixes --- */
-@media (max-width: 600px) {
-    .modal-content {
-        max-height: 95vh;
-        width: 100%;
-    }
-    .carousel-container {
-        max-height: 40vh; /* More room for text on small screens */
-    }
-    .modal-title { font-size: 1.4rem; }
-}
