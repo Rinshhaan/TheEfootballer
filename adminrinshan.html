@@ -3,103 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - eFootball IDs</title>
+    <title>Admin Panel | eFootball ID Showcase</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Extra styles just for admin layout */
         body { display: block; background: var(--bg-color); }
-        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;}
+        #loginOverlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--bg-color); z-index: 9999; 
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+        }
+        .upload-area {
+            border: 2px dashed var(--accent-color);
+            padding: 30px; text-align: center; border-radius: 15px;
+            background: rgba(0, 247, 255, 0.02); cursor: pointer;
+            transition: 0.3s; margin-bottom: 15px;
+        }
+        .upload-area:hover { background: rgba(0, 247, 255, 0.08); }
+        #uploadStatus { color: var(--accent-color); font-weight: 600; margin: 10px 0; }
+        .admin-card {
+            background: var(--card-bg); padding: 30px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .status-in { background: rgba(37, 211, 102, 0.2); color: #25d366; }
+        /* Refined Sold Out Status */
+        .status-out { background: rgba(255, 56, 56, 0.2); color: #ff3838; border: 1px solid #ff3838; }
     </style>
 </head>
 <body>
+
     <div id="loginOverlay">
-        <h2 class="highlight" style="margin-bottom: 20px;">Admin Access</h2>
-        <input type="password" id="adminPass" class="form-control" style="max-width: 300px; margin-bottom: 10px;" placeholder="Enter Password">
-        <button onclick="checkPass()" class="btn btn-primary">Login</button>
+        <i class="fa-solid fa-shield-halved" style="font-size: 4rem; color: var(--accent-color); margin-bottom: 20px;"></i>
+        <h2 class="highlight">ADMIN ACCESS</h2>
+        <div style="margin-top: 20px; width: 300px;">
+            <input type="password" id="adminPass" class="form-control" placeholder="Enter Admin Password">
+            <button onclick="checkPass()" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Login</button>
+        </div>
     </div>
 
     <div class="admin-container" id="adminContent" style="display: none;">
-        <div class="admin-header">
-            <h2>Product Management</h2>
-            <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-house"></i> Go to Site</a>
-        </div>
+        <header class="admin-header">
+            <div>
+                <h1 class="highlight"><i class="fa-solid fa-gauge-high"></i> Dashboard</h1>
+                <p style="color: var(--text-muted);">Manage your eFootball ID inventory</p>
+            </div>
+            <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-eye"></i> View Live Site</a>
+        </header>
 
-        <div style="background: var(--card-bg); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-            <h3 id="formTitle" style="margin-bottom: 20px; color: var(--accent-color);">Add New ID</h3>
+        <div class="admin-card">
+            <h3 id="formTitle" style="margin-bottom: 25px; color: var(--accent-color);">List a New Account</h3>
+            
             <form id="productForm">
                 <input type="hidden" id="editProductId">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="title" class="form-control" required placeholder="e.g. Mega Account Level 100">
-                </div>
-                <div class="form-group">
-                    <label>Price</label>
-                    <input type="text" id="price" class="form-control" required placeholder="e.g. $50 USD">
-                </div>
-                <div class="form-group">
-                    <label>Short Description (shown on index card)</label>
-                    <input type="text" id="shortDesc" class="form-control" required placeholder="Brief summary...">
-                </div>
-                <div class="form-group">
-                    <label>Full Description (shown in modal)</label>
-                    <textarea id="fullDesc" class="form-control" required placeholder="Detailed account info..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Player Highlights (shown in modal)</label>
-                    <textarea id="playerInfo" class="form-control" placeholder="List top players (Messi, Ney...)"></textarea>
-                </div>
-                 <div class="form-group">
-                    <label>Media URLs (Images or .mp4 Videos) - Comma separated</label>
-                    <textarea id="mediaUrls" class="form-control" placeholder="https://link.to/image1.jpg, https://link.to/video.mp4" required></textarea>
-                    <small style="color: var(--text-muted);">Provide direct URLs to images or videos, separated by commas. The first one will be the thumbnail.</small>
-                     <div id="mediaPreview" class="media-preview-list"></div>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
-                     <label style="margin:0;">Stock Out?</label>
-                    <input type="checkbox" id="stockOut" style="width: 20px; height: 20px;">
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Product Title *</label>
+                        <input type="text" id="title" class="form-control" required placeholder="Mandatory Title">
+                    </div>
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="text" id="price" class="form-control" required placeholder="Mandatory Price">
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="saveBtn">Add Product</button>
-                <button type="button" class="btn" id="cancelBtn" style="display: none; background: #555; color: white;">Cancel Edit</button>
+                <div class="form-group">
+                    <label>Players Included (Key Highlights)</label>
+                    <textarea id="playerInfo" class="form-control" placeholder="List Big Time, Epic, or Legend players..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Gallery (Images & Videos - Optional)</label>
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-images" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px;"></i>
+                        <p>Click to upload screenshots/videos</p>
+                        <input type="file" id="fileInput" style="display: none;" multiple accept="image/*,video/*">
+                    </div>
+                    <div id="mediaPreview" class="media-preview-list"></div>
+                    <div id="uploadStatus"></div>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px;">
+                    <input type="checkbox" id="stockOut" style="width: 22px; height: 22px; accent-color: #ff3838;">
+                    <label style="margin: 0; color: #ff3838; font-weight: 600;">MARK AS SOLD OUT</label>
+                </div>
+
+                <button type="submit" id="saveBtn" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1.1rem;">
+                    <i class="fa-solid fa-plus"></i> Add Product
+                </button>
+                <button type="button" id="cancelBtn" class="btn" style="display: none; width: 100%; margin-top: 10px; background: #333; color: white;">Cancel Editing</button>
             </form>
         </div>
 
-        <h3 style="color: var(--accent-color);">Listed IDs</h3>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Thumbnail</th>
-                    <th>Title</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="adminProductTable">
-                </tbody>
-        </table>
+        <div style="overflow-x: auto; margin-top: 40px;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminProductTable"></tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        // SUPER BASIC PASSWORD CHECK
-        // CHANGE THIS PASSWORD!
-        const correctPass = "admin123"; 
-
+        const pass = "admin123";
         function checkPass() {
-            const input = document.getElementById('adminPass').value;
-            if(input === correctPass) {
+            if(document.getElementById('adminPass').value === pass) {
                 document.getElementById('loginOverlay').style.display = "none";
                 document.getElementById('adminContent').style.display = "block";
-                localStorage.setItem("adminLoggedIn", "true");
-            } else {
-                alert("Wrong password");
-            }
+                localStorage.setItem("eFootballAdmin", "active");
+            } else { alert("Incorrect Password"); }
         }
-        // Keep logged in per session
-        if(localStorage.getItem("adminLoggedIn") === "true") {
-             document.getElementById('loginOverlay').style.display = "none";
-             document.getElementById('adminContent').style.display = "block";
+        if(localStorage.getItem("eFootballAdmin") === "active") {
+            document.getElementById('loginOverlay').style.display = "none";
+            document.getElementById('adminContent').style.display = "block";
         }
     </script>
     <script type="module" src="admin.js"></script>

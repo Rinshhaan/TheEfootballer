@@ -213,6 +213,8 @@ body {
     position: relative;
     border: 2px solid var(--accent-color);
     box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Extra smooth for iPhone users */
 }
 
 .close-modal-btn {
@@ -232,15 +234,19 @@ body {
 
 /* --- Modal Carousel --- */
 .carousel-container {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    background: #000;
+        position: relative;
+        width: 100%;
+        /* Max-height ensures the image doesn't take 100% of the screen */
+        max-height: 65vh; 
+        height: 400px; 
+        flex-shrink: 0;
+        background: #000;
 }
 
 .carousel-slide {
     width: 100%;
     height: 100%;
+    background: radial-gradient(circle, #161b2a 0%, #000 100%);
     display: none;
 }
 
@@ -271,7 +277,8 @@ body {
 .next-btn { right: 10px; }
 
 .modal-details {
-    padding: 30px;
+    padding: 25px;
+    padding-bottom: 40px; /* Extra space for comfortable thumb clicking */
 }
 
 .modal-title { font-size: 2rem; color: var(--accent-color); margin-bottom: 10px; }
@@ -305,4 +312,191 @@ textarea.form-control { resize: vertical; height: 100px; }
     .controller-icon { font-size: 3rem; }
     .carousel-container { height: 250px; }
     .modal-content { margin: 10px; max-height: 95vh; }
+}
+
+.media-preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+
+.media-preview-item {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+}
+
+/* Sold Out Overlay for Index Page */
+.sold-out-stamp {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    border: 3px solid var(--danger-color);
+    color: var(--danger-color);
+    padding: 5px 15px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.8);
+    border-radius: 5px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Modal Responsiveness */
+.modal-content {
+    width: 95% !important; /* Mobile friendly */
+    max-height: 90vh;
+    border: 2px solid var(--accent-color);
+    background: var(--bg-color);
+}
+
+.carousel-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Fullscreen and controls for videos */
+video::-webkit-media-controls {
+    display: flex !important;
+}
+
+/* Sold Out Banner on Card */
+.sold-out-banner {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: #ff3838;
+    color: white;
+    padding: 5px 40px;
+    transform: rotate(45deg);
+    font-weight: bold;
+    font-size: 0.8rem;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.sold-out-card {
+    opacity: 0.8;
+    filter: grayscale(0.3);
+}
+
+/* Modal Improvements */
+
+.carousel-container {
+    height: 60vh; /* Responsive height */
+    background: #000;
+}
+
+@media (max-width: 600px) {
+    .carousel-container {
+        height: 35vh; /* Shorter for small phones */
+    }
+    .modal-title { font-size: 1.4rem; }
+}
+
+/* Video Styling */
+.modal-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+/* --- Modal Overlay & Content Fix --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 15px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 650px; /* Slimmer look like your screenshot */
+    max-height: 90vh; /* Prevents it from going off-screen */
+    border-radius: 20px;
+    position: relative;
+    border: 2px solid var(--accent-color);
+    display: flex;
+    flex-direction: column; /* Stacks media on top of text */
+    overflow-y: auto; /* This allows the WHOLE modal to scroll */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Hide scrollbar but keep functionality */
+.modal-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- Carousel Adjustment --- */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: auto; /* Let it scale with the image */
+    min-height: 200px;
+    max-height: 50vh; /* Limits image size so details are visible */
+    background: #000;
+    flex-shrink: 0; /* Prevents image from being crushed */
+}
+
+.carousel-slide img, 
+.carousel-slide video {
+    width: 100%;
+    height: 100%;
+    max-height: 50vh;
+    object-fit: contain; /* Shows full screenshot without cropping */
+}
+
+/* --- Details Section --- */
+.modal-details {
+    margin-top: 2vw;
+    padding: 25px;
+    background: var(--card-bg);
+    flex-grow: 1; /* Takes up remaining space */
+}
+
+/* Modal UI Polish */
+.modal-price {
+    color: var(--text-color);
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.detail-section h3 {
+    color: var(--accent-color);
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+/* --- Mobile Specific Fixes --- */
+@media (max-width: 600px) {
+    .modal-content {
+        max-height: 95vh;
+        width: 100%;
+    }
+    .carousel-container {
+        max-height: 40vh; /* More room for text on small screens */
+    }
+    .modal-title { font-size: 1.4rem; }
 }
