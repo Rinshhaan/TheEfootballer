@@ -3,96 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | eFootball ID Showcase</title>
+    <title>Admin Panel | eFootball ID Store</title>
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { display: block; background: var(--bg-color); }
+        /* Essential Admin-Specific Styles */
+        body { background: var(--bg-color); color: var(--text-color); margin: 0; }
+        
         #loginOverlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--bg-color); z-index: 9999; 
+            background: #0b0f19; z-index: 9999; 
             display: flex; justify-content: center; align-items: center; flex-direction: column;
         }
+
+        .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; display: none; }
+        
+        .admin-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
         .upload-area {
             border: 2px dashed var(--accent-color);
             padding: 30px; text-align: center; border-radius: 15px;
             background: rgba(0, 247, 255, 0.02); cursor: pointer;
-            transition: 0.3s; margin-bottom: 15px;
+            transition: 0.3s; margin-bottom: 10px;
         }
         .upload-area:hover { background: rgba(0, 247, 255, 0.08); }
-        #uploadStatus { color: var(--accent-color); font-weight: 600; margin: 10px 0; }
-        .admin-card {
-            background: var(--card-bg); padding: 30px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+        .media-preview-list { 
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; 
         }
+        .media-preview-item { 
+            width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #333; 
+        }
+
+        /* Status Badge Styling */
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .status-in { background: rgba(37, 211, 102, 0.2); color: #25d366; }
-        /* Refined Sold Out Status */
         .status-out { background: rgba(255, 56, 56, 0.2); color: #ff3838; border: 1px solid #ff3838; }
+
+        /* Table Styling */
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+        .admin-table th { background: rgba(255,255,255,0.05); padding: 15px; text-align: left; color: var(--accent-color); font-size: 0.85rem; }
+        .admin-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        
+        @media (max-width: 768px) {
+            .admin-table thead { display: none; }
+            .admin-table tr { display: block; margin-bottom: 15px; border: 1px solid #333; padding: 10px; border-radius: 10px; }
+            .admin-table td { display: flex; justify-content: space-between; padding: 5px; border: none; font-size: 0.9rem; }
+            .admin-table td::before { content: attr(data-label); font-weight: bold; color: var(--accent-color); }
+        }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
-        <i class="fa-solid fa-shield-halved" style="font-size: 4rem; color: var(--accent-color); margin-bottom: 20px;"></i>
-        <h2 class="highlight">ADMIN ACCESS</h2>
-        <div style="margin-top: 20px; width: 300px;">
-            <input type="password" id="adminPass" class="form-control" placeholder="Enter Admin Password">
-            <button onclick="checkPass()" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Login</button>
+        <i class="fa-solid fa-user-lock" style="font-size: 3.5rem; color: var(--accent-color); margin-bottom: 20px;"></i>
+        <h2 style="letter-spacing: 2px; color: white;">ADMIN LOGIN</h2>
+        <div style="margin-top: 20px; width: 280px;">
+            <input type="password" id="adminPass" class="form-control" placeholder="Password" style="text-align: center; margin-bottom: 15px;">
+            <button onclick="checkPass()" class="btn btn-primary" style="width: 100%;">Access Dashboard</button>
         </div>
     </div>
 
-    <div class="admin-container" id="adminContent" style="display: none;">
+    <div class="admin-container" id="adminContent">
+        
         <header class="admin-header">
             <div>
-                <h1 class="highlight"><i class="fa-solid fa-gauge-high"></i> Dashboard</h1>
-                <p style="color: var(--text-muted);">Manage your eFootball ID inventory</p>
+                <h1 style="color: var(--accent-color); margin: 0;"><i class="fa-solid fa-gauge-high"></i> Dashboard</h1>
+                <p style="color: #888; margin: 5px 0 0 0;">Manage Inventory & Sales</p>
             </div>
-            <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-eye"></i> View Live Site</a>
+            <div style="display: flex; gap: 10px;">
+                <a href="index.html" class="btn" style="background: #333; color: white;"><i class="fa-solid fa-eye"></i> View Store</a>
+                <button onclick="logoutAdmin()" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> Logout</button>
+            </div>
         </header>
 
-        <div class="admin-card">
-            <h3 id="formTitle" style="margin-bottom: 25px; color: var(--accent-color);">List a New Account</h3>
+        <div class="admin-card" style="background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+            <h3 id="formTitle" style="margin-bottom: 20px; color: white;">List a New Account</h3>
             
             <form id="productForm">
                 <input type="hidden" id="editProductId">
                 
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
                     <div class="form-group">
-                        <label>Product Title *</label>
-                        <input type="text" id="title" class="form-control" required placeholder="Mandatory Title">
+                        <label>Account Title</label>
+                        <input type="text" id="title" class="form-control" required placeholder="e.g. 105 Messi + 2 Epics">
                     </div>
                     <div class="form-group">
-                        <label>Price *</label>
-                        <input type="text" id="price" class="form-control" required placeholder="Mandatory Price">
+                        <label>Price (₹)</label>
+                        <input type="text" id="price" class="form-control" required placeholder="e.g. ₹999">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Players Included (Key Highlights)</label>
-                    <textarea id="playerInfo" class="form-control" placeholder="List Big Time, Epic, or Legend players..."></textarea>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Player Highlights / Account Info</label>
+                    <textarea id="playerInfo" class="form-control" rows="3" placeholder="Describe the players, coins, and level..."></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label>Gallery (Images & Videos - Optional)</label>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Internal User Details (Admin Only)</label>
+                    <input type="text" id="userContact" class="form-control" placeholder="e.g. Owner: Rahul (+91 00000 00000)">
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Media Gallery</label>
                     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                        <i class="fa-solid fa-images" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px;"></i>
-                        <p>Click to upload screenshots/videos</p>
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--accent-color);"></i>
+                        <p style="margin-top: 10px;">Click to Upload Screenshots or Videos</p>
                         <input type="file" id="fileInput" style="display: none;" multiple accept="image/*,video/*">
                     </div>
                     <div id="mediaPreview" class="media-preview-list"></div>
                     <div id="uploadStatus"></div>
                 </div>
 
-                <div class="form-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px;">
-                    <input type="checkbox" id="stockOut" style="width: 22px; height: 22px; accent-color: #ff3838;">
-                    <label style="margin: 0; color: #ff3838; font-weight: 600;">MARK AS SOLD OUT</label>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin: 20px 0;">
+                    <input type="checkbox" id="stockOut" style="width: 20px; height: 20px; cursor: pointer;">
+                    <label for="stockOut" style="margin: 0; color: #ff3838; font-weight: bold; cursor: pointer;">MARK AS SOLD OUT</label>
                 </div>
 
-                <button type="submit" id="saveBtn" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1.1rem;">
-                    <i class="fa-solid fa-plus"></i> Add Product
-                </button>
-                <button type="button" id="cancelBtn" class="btn" style="display: none; width: 100%; margin-top: 10px; background: #333; color: white;">Cancel Editing</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" id="saveBtn" class="btn btn-primary" style="flex: 2; padding: 15px;">
+                        <i class="fa-solid fa-plus"></i> Add Product
+                    </button>
+                    <button type="button" id="cancelBtn" class="btn" style="display: none; flex: 1; background: #444; color: white;">Cancel Edit</button>
+                </div>
             </form>
         </div>
 
@@ -104,28 +142,39 @@
                         <th>Title</th>
                         <th>Price</th>
                         <th>Status</th>
+                        <th>Upload Date</th>
+                        <th>Internal Info</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="adminProductTable"></tbody>
+                <tbody id="adminProductTable">
+                    </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        const pass = "admin123";
+        // Inline Auth Check for Speed
+        const pass = "admin123"; // CHANGE THIS PASSWORD
         function checkPass() {
-            if(document.getElementById('adminPass').value === pass) {
+            const input = document.getElementById('adminPass').value;
+            if(input === pass) {
                 document.getElementById('loginOverlay').style.display = "none";
                 document.getElementById('adminContent').style.display = "block";
                 localStorage.setItem("eFootballAdmin", "active");
-            } else { alert("Incorrect Password"); }
+            } else { 
+                alert("Access Denied: Wrong Password"); 
+            }
         }
+
+        // Keep logged in on refresh
         if(localStorage.getItem("eFootballAdmin") === "active") {
             document.getElementById('loginOverlay').style.display = "none";
             document.getElementById('adminContent').style.display = "block";
         }
     </script>
+
     <script type="module" src="admin.js"></script>
+
 </body>
 </html>

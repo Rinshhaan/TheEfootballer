@@ -252,6 +252,11 @@ body {
     display: block;
 }
 
+#carouselSlides {
+    display: flex;
+    width: 100%;
+}
+
 .carousel-btn {
     position: absolute;
     top: 50%;
@@ -460,4 +465,88 @@ video::-webkit-media-controls {
     text-transform: uppercase;
     margin-bottom: 8px;
     letter-spacing: 1px;
+}
+
+/* Responsive Table Logic */
+@media screen and (max-width: 768px) {
+    /* Hide the traditional table header */
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table, 
+    .admin-table tbody, 
+    .admin-table tr, 
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Make each row look like a card */
+    .admin-table tr {
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(0, 247, 255, 0.2);
+        border-radius: 12px;
+        padding: 10px;
+    }
+
+    .admin-table td {
+        text-align: right;
+        padding: 12px 10px;
+        position: relative;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .admin-table td:last-child {
+        border-bottom: none;
+        justify-content: center; /* Center buttons */
+        gap: 15px;
+    }
+
+    /* This adds the label (e.g., "Price:") before the value */
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+    }
+
+    /* Thumbnail specific mobile tweak */
+    .admin-table td[data-label="Thumbnail"] {
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px 8px 0 0;
+    }
+    .admin-table td[data-label="Thumbnail"]::before {
+        display: none; /* Hide label for the image */
+    }
+}
+
+
+/* Default size for desktop table */
+.admin-table-img {
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Make it large when it turns into a card on mobile */
+@media screen and (max-width: 768px) {
+    .admin-table td[data-label="Thumbnail"] {
+        height: 200px; /* Gives the top of the card more space */
+    }
+    
+    .admin-table-img {
+        width: 100%; /* Image spans the full width of the card */
+        height: 100%;
+        border-radius: 8px 8px 0 0; /* Rounded corners only at top */
+        object-fit: fill
+    }
 }
