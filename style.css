@@ -45,7 +45,7 @@ body {
 .main-title {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: 5px;
     letter-spacing: 1px;
 }
 
@@ -79,6 +79,24 @@ body {
     transform: translateY(-50%);
     color: var(--accent-color);
     font-size: 1.2rem;
+}
+
+.tagline {
+    font-family: 'Orbitron', sans-serif; /* Matches the gaming vibe */
+    font-size: 0.75rem;
+    color: #00f2ff; /* Your accent cyan color */
+    text-transform: uppercase;
+    letter-spacing: 5px; /* Creates that 'pro' look */
+    margin-bottom: 20px;
+    opacity: 0.8;
+    font-weight: 400;
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+    animation: fadeInTag 1.5s ease-in-out;
+}
+
+@keyframes fadeInTag {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 0.8; transform: translateY(0); }
 }
 
 /* --- Product Grid (Index Page) --- */
