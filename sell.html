@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your ID – getnow shop</title>
+    <meta name="description" content="Want to sell your eFootball ID? Contact us on WhatsApp and get the best price.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/getnowshop.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="page-sell">
+
+    <!-- ══ NAVBAR ══ -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>getnow <strong>shop</strong></span>
+        </a>
+        <div class="nav-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search IDs..." oninput="window.location.href='buy.html'">
+        </div>
+    </nav>
+
+    <main class="main-content sell-page">
+
+        <!-- SELL ID FORM -->
+        <div class="sell-container">
+            <div class="sell-form-card">
+                <div class="form-header">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <h2>Submit Your ID</h2>
+                    <p>Fill in the details to list your ID on our shop.</p>
+                </div>
+
+                <form id="sellForm" class="sell-form">
+                    <!-- Media Uploads -->
+                    <div class="form-section">
+                        <label class="section-label"><i class="fa-solid fa-images"></i> Proof of ID (Screenshots &
+                            Video)</label>
+                        <div class="upload-grid">
+                            <div class="upload-item">
+                                <label for="idScreenshots" class="upload-box">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Squad Screenshots</span>
+                                    <input type="file" id="idScreenshots" accept="image/*" multiple required>
+                                </label>
+                                <div id="previewScreenshots" class="media-preview"></div>
+                            </div>
+                            <div class="upload-item">
+                                <label for="idVideo" class="upload-box">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>Player Recording</span>
+                                    <input type="file" id="idVideo" accept="video/*">
+                                </label>
+                                <div id="previewVideo" class="media-preview"></div>
+                            </div>
+                            <div class="upload-item">
+                                <label for="konamiProof" class="upload-box">
+                                    <i class="fa-solid fa-link"></i>
+                                    <span>Konami Link Proof</span>
+                                    <input type="file" id="konamiProof" accept="image/*" required>
+                                </label>
+                                <div id="previewKonami" class="media-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="form-group row-group">
+                        <div class="input-wrap">
+                            <label for="userName">User Name</label>
+                            <input type="text" id="userName" placeholder="Enter your name" required>
+                        </div>
+                        <div class="input-wrap">
+                            <label for="waNumber">WhatsApp Number</label>
+                            <input type="tel" id="waNumber" placeholder="e.g. 91807..." required>
+                        </div>
+                    </div>
+
+                    <!-- ID Details -->
+                    <div class="form-group">
+                        <label for="paidCards">Paid Players (Comma separated)</label>
+                        <textarea id="paidCards" placeholder="e.g. Bigtime Messi,Epic Neymar,Double booster Ronaldo..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Paid Players</label>
+                        <div class="numeric-counter" id="paidCountCounter">
+                            <button type="button" class="counter-btn" id="decrement">-</button>
+                            <input type="number" id="paidCountInput" value="0" min="0" required>
+                            <button type="button" class="counter-btn" id="increment">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idPrice">Your Expected Price (₹)</label>
+                        <input type="number" id="idPrice" placeholder="Enter amount" required>
+                        <small class="price-note">Note: we only post the id if we are ok with the price of corresponding
+                            ID.</small>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="isKonamiOnly">
+                            <span class="slider"></span>
+                        </label>
+                        <span>Only Konami Linked Account?</span>
+                    </div>
+
+                    <!-- Post Button -->
+                    <button type="submit" class="submit-btn" id="postBtn">
+                        <span class="btn-text">Post to Waiting List</span>
+                        <div class="loader-wrap" id="postLoader">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        </div>
+                    </button>
+                </form>
+
+                <div id="formSuccess" class="form-success-overlay">
+                    <div class="success-content">
+                        <div class="success-icon-wrap">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h3>Successfully Submitted!</h3>
+                        <p>Your ID details have been sent to our waiting list for review.</p>
+                        <p class="redirect-sub">Redirecting to WhatsApp in 3s...</p>
+                        <div class="success-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ══ BOTTOM TAB BAR ══ -->
+    <nav class="tab-bar">
+        <a href="index.html" class="tab-item" id="tab-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="buy.html" class="tab-item" id="tab-buy">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Buy</span>
+        </a>
+        <a href="sell.html" class="tab-item active" id="tab-sell">
+            <i class="fa-solid fa-tag"></i>
+            <span>Sell</span>
+        </a>
+        <a href="about.html" class="tab-item" id="tab-about">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
+    <script type="module" src="sell.js"></script>
+</body>
+
+</html>
