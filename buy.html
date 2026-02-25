@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy IDs – getnow shop</title>
+    <meta name="description"
+        content="Browse all available eFootball IDs. Search and sort by price to find the perfect account.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/getnowshop.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="page-buy">
+
+    <!-- ══ NAVBAR (Buy Page) ══ -->
+    <nav class="navbar navbar-buy">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>getnow <strong>shop</strong></span>
+        </a>
+        <div class="nav-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search IDs, players...">
+        </div>
+    </nav>
+
+    <!-- ══ BUY PAGE CONTROLS ══ -->
+    <div class="buy-controls">
+        <div class="buy-header">
+            <h1 class="buy-title"><i class="fa-solid fa-bag-shopping"></i> All IDs</h1>
+            <span class="buy-count" id="productCount">Loading...</span>
+        </div>
+
+        <div class="buy-filters">
+            <!-- Price range dropdown -->
+            <div class="price-dropdown" id="priceDropdown">
+                <button class="price-dropdown-btn" id="priceDropdownBtn" type="button">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="priceDisplay">Price: ₹0 — ₹5000</span>
+                    <i class="fa-solid fa-chevron-down price-chevron" id="priceChevron"></i>
+                </button>
+                <div class="price-dropdown-panel" id="priceDropdownPanel">
+                    <p class="panel-label">Drag to set price range</p>
+                    <div class="dual-range-container">
+                        <div class="range-track-bg"></div>
+                        <div class="range-track-fill" id="rangeFill"></div>
+                        <input type="range" id="rangeMin" min="0" max="5000" value="0" step="50">
+                        <input type="range" id="rangeMax" min="0" max="5000" value="5000" step="50">
+                    </div>
+                    <div class="range-step-labels">
+                        <span>₹0</span>
+                        <span>₹2500</span>
+                        <span>₹5000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PRODUCT GRID ══ -->
+    <main class="main-content buy-main">
+        <div id="product-grid" class="product-grid">
+            <div class="grid-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading IDs...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ══ PRODUCT MODAL ══ -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal-btn" id="closeModal">&times;</span>
+            <div class="carousel-container">
+                <button class="carousel-btn prev-btn" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <div id="carouselSlides"></div>
+                <button class="carousel-btn next-btn" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="modal-details">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <p id="modalPrice" class="modal-price"></p>
+                <div class="detail-section">
+                    <h3>Players Included</h3>
+                    <p id="modalPlayerInfo"></p>
+                </div>
+                <div style="text-align:center;margin-top:30px;">
+                    <a id="modalWaLink" href="#" class="whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Buy Now via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ BOTTOM TAB BAR ══ -->
+    <nav class="tab-bar">
+        <a href="index.html" class="tab-item" id="tab-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="buy.html" class="tab-item active" id="tab-buy">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Buy</span>
+        </a>
+        <a href="sell.html" class="tab-item" id="tab-sell">
+            <i class="fa-solid fa-tag"></i>
+            <span>Sell</span>
+        </a>
+        <a href="about.html" class="tab-item" id="tab-about">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
+    <script type="module" src="buy.js"></script>
+</body>
+
+</html>
