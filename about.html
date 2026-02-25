@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About – getnow shop</title>
+    <meta name="description" content="Learn about getnow shop – the most trusted eFootball ID marketplace.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/getnowshop.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="page-about">
+
+    <!-- ══ NAVBAR ══ -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>getnow <strong>shop</strong></span>
+        </a>
+        <div class="nav-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search IDs..." onfocus="window.location.href='buy.html'">
+        </div>
+    </nav>
+
+    <main class="main-content about-page">
+
+        <!-- ABOUT HERO -->
+        <div class="about-hero">
+            <div class="about-logo-ring">
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <h1>getnow <span class="accent">shop</span></h1>
+            <p class="about-tagline">YOUR TRUSTED eFOOTBALL ID MARKETPLACE</p>
+        </div>
+
+        <!-- ABOUT DESCRIPTION -->
+        <div class="about-card">
+            <h2><i class="fa-solid fa-store"></i> Who We Are</h2>
+            <p>
+                <strong>getnow shop</strong> is a trusted marketplace for buying and selling premium eFootball IDs.
+                We curate the best accounts — from budget-friendly picks to beast-tier legendaries —
+                so you can find the perfect ID without the hassle.
+            </p>
+            <p style="margin-top:12px;">
+                Every deal is handled with full transparency. No spam. No scams. Just clean, fast transactions
+                via WhatsApp with a real seller you can trust.
+            </p>
+        </div>
+
+        <!-- TRUST BADGES -->
+        <div class="trust-grid">
+            <div class="trust-card">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>100% Safe</h3>
+                <p>All accounts are verified before listing</p>
+            </div>
+            <div class="trust-card">
+                <i class="fa-solid fa-bolt"></i>
+                <h3>Instant Deals</h3>
+                <p>Fast WhatsApp transactions, no delays</p>
+            </div>
+            <div class="trust-card">
+                <i class="fa-solid fa-star"></i>
+                <h3>Top Quality</h3>
+                <p>Hand-picked IDs with the best players</p>
+            </div>
+            <div class="trust-card">
+                <i class="fa-solid fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Always available to answer your questions</p>
+            </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="about-card contact-card">
+            <h2><i class="fa-solid fa-address-card"></i> Contact Us</h2>
+            <p>Have a question or want to make a deal? Reach out directly on WhatsApp — we respond fast.</p>
+            <button class="whatsapp-btn about-wa-btn" id="aboutWaBtn">
+                <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+            </button>
+        </div>
+
+        <!-- DISCLAIMER -->
+        <div class="disclaimer">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>This is an independent marketplace. We are not affiliated with Konami or eFootball officially.</p>
+        </div>
+
+    </main>
+
+    <!-- ══ BOTTOM TAB BAR ══ -->
+    <nav class="tab-bar">
+        <a href="index.html" class="tab-item" id="tab-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="buy.html" class="tab-item" id="tab-buy">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Buy</span>
+        </a>
+        <a href="sell.html" class="tab-item" id="tab-sell">
+            <i class="fa-solid fa-tag"></i>
+            <span>Sell</span>
+        </a>
+        <a href="about.html" class="tab-item active" id="tab-about">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
+    <script>
+        const encodedPhone = "OTE4MDc4MjQwMDE4";
+        document.getElementById('aboutWaBtn').onclick = () => {
+            const num = atob(encodedPhone);
+            const msg = encodeURIComponent("Hello! I have a question about your eFootball IDs.");
+            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+        };
+    </script>
+</body>
+
+</html>
