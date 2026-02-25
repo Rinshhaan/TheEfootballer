@@ -1,69 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get your eFootball ID's</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <title>getnow shop – eFootball IDs</title>
+    <meta name="description"
+        content="Buy and sell premium eFootball IDs. Best deals, budget picks, and beast accounts.">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/getnowshop.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
-<body>
 
-    <header class="header-container">
-        <i class="fa-solid fa-gamepad controller-icon"></i>
-        <h1 class="main-title">getnow <span class="highlight">shop</span></h1>
-        <p class="tagline">Get your ID's</p>
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search IDs...">
+<body class="page-home">
+
+    <!-- ══ NAVBAR ══ -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>getnow <strong>shop</strong></span>
+        </a>
+        <div class="nav-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search IDs, prices...">
         </div>
-    </header>
+    </nav>
 
+    <!-- ══ HERO CAROUSEL ══ -->
+    <section class="hero-section">
+        <div class="hero-track-wrapper">
+            <div class="hero-track" id="heroTrack">
+                <a class="hero-slide slide-recent" href="#recently-added">
+                    <div class="hero-slide-inner">
+                        <span class="hero-badge badge-new">✦ NEW</span>
+                        <h2>Recently Added IDs</h2>
+                        <p>Fresh accounts just listed — be the first to grab them</p>
+                        <span class="hero-cta">Explore Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                    <div class="hero-deco"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                </a>
+                <a class="hero-slide slide-hot" href="#hot-deals">
+                    <div class="hero-slide-inner">
+                        <span class="hero-badge badge-hot">🔥 HOT</span>
+                        <h2>Hot Deals Today</h2>
+                        <p>Best value picks — grab them fast before they're gone!</p>
+                        <span class="hero-cta">View Deals <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                    <div class="hero-deco"><i class="fa-solid fa-fire"></i></div>
+                </a>
+                <a class="hero-slide slide-budget" href="#budget-friendly">
+                    <div class="hero-slide-inner">
+                        <span class="hero-badge badge-budget">💰 BUDGET</span>
+                        <h2>Budget Friendly IDs</h2>
+                        <p>Quality eFootball accounts under affordable prices</p>
+                        <span class="hero-cta">Shop Budget <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                    <div class="hero-deco"><i class="fa-solid fa-wallet"></i></div>
+                </a>
+                <a class="hero-slide slide-beast" href="#beast-ones">
+                    <div class="hero-slide-inner">
+                        <span class="hero-badge badge-beast">💪 BEAST</span>
+                        <h2>Beast Accounts</h2>
+                        <p>Top-tier premium IDs with legendary players</p>
+                        <span class="hero-cta">Go Premium <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                    <div class="hero-deco"><i class="fa-solid fa-dragon"></i></div>
+                </a>
+            </div>
+        </div>
+        <button class="hero-arrow hero-prev" id="heroPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="hero-arrow hero-next" id="heroNext"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="hero-dots" id="heroDots"></div>
+    </section>
+
+    <!-- ══ MAIN CONTENT ══ -->
     <main class="main-content">
-        <div id="product-grid" class="product-grid">
-            <p style="text-align:center; color: var(--text-muted);">Loading IDs...</p>
-        </div>
+
+        <!-- RECENTLY ADDED -->
+        <section class="product-section" id="recently-added">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-icon">🕐</span>
+                    <h2 class="section-title">Recently Added</h2>
+                </div>
+                <a href="buy.html" class="section-see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="product-row" id="row-recent">
+                <div class="row-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+            <div class="load-more-wrap">
+                <button class="load-more-btn" onclick="goToBuy()">Load More <i
+                        class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <!-- HOT DEALS -->
+        <section class="product-section" id="hot-deals">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-icon">🔥</span>
+                    <h2 class="section-title">Hot Deals</h2>
+                </div>
+                <a href="buy.html" class="section-see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="product-row" id="row-hot">
+                <div class="row-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+            <div class="load-more-wrap">
+                <button class="load-more-btn" onclick="goToBuy()">Load More <i
+                        class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <!-- BUDGET FRIENDLY -->
+        <section class="product-section" id="budget-friendly">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-icon">💰</span>
+                    <h2 class="section-title">Budget Friendly</h2>
+                </div>
+                <a href="buy.html" class="section-see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="product-row" id="row-budget">
+                <div class="row-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+            <div class="load-more-wrap">
+                <button class="load-more-btn" onclick="goToBuy()">Load More <i
+                        class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+        <!-- BEAST ONES -->
+        <section class="product-section" id="beast-ones">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-icon">💪</span>
+                    <h2 class="section-title">Beast Ones</h2>
+                </div>
+                <a href="buy.html" class="section-see-all">See All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="product-row" id="row-beast">
+                <div class="row-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+            <div class="load-more-wrap">
+                <button class="load-more-btn" onclick="goToBuy()">Load More <i
+                        class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
     </main>
 
-    <div class="footer-container">
-        <p class="trust-message">
-        We ensure the best dealings regarding safety and reliability. No spam and 100% trusted.
-        </p>
-        <button id="mainFooterWaBtn" class="whatsapp-btn">
-            <i class="fa-brands fa-whatsapp"></i> Contact via WhatsApp
-        </button>
-    </div>
-
+    <!-- ══ PRODUCT MODAL ══ -->
     <div id="productModal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal-btn" id="closeModal">&times;</span>
-            
             <div class="carousel-container">
                 <button class="carousel-btn prev-btn" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
-                <div id="carouselSlides">
-                    </div>
+                <div id="carouselSlides"></div>
                 <button class="carousel-btn next-btn" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
-
             <div class="modal-details">
                 <h2 id="modalTitle" class="modal-title"></h2>
                 <p id="modalPrice" class="modal-price"></p>
-                
-                
                 <div class="detail-section">
-                    <h3>Player's Included</h3>
+                    <h3>Players Included</h3>
                     <p id="modalPlayerInfo"></p>
                 </div>
-                 <div style="text-align: center; margin-top: 30px;">
-                    <a id="modalWaLink" href="#" target="_blank" class="whatsapp-btn">
-                        <i class="fa-brands fa-whatsapp"></i> Buy Now
+                <div style="text-align:center;margin-top:30px;">
+                    <a id="modalWaLink" href="#" class="whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Buy Now via WhatsApp
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ══ BOTTOM TAB BAR ══ -->
+    <nav class="tab-bar">
+        <a href="index.html" class="tab-item active" id="tab-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="buy.html" class="tab-item" id="tab-buy">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Buy</span>
+        </a>
+        <a href="sell.html" class="tab-item" id="tab-sell">
+            <i class="fa-solid fa-tag"></i>
+            <span>Sell</span>
+        </a>
+        <a href="about.html" class="tab-item" id="tab-about">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
     <script type="module" src="app.js"></script>
 </body>
+
 </html>
