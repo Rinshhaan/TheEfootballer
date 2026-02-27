@@ -2909,6 +2909,8 @@ textarea.form-control {
 .save-btn {
     background: var(--accent);
     color: #000;
+    padding: 10px;
+    border-radius: 7px;
 }
 
 /* Admin Login Overlay */
@@ -3231,7 +3233,7 @@ textarea.form-control {
     background: rgba(0, 0, 0, 0.3);
     padding: 15px;
     border-radius: 12px;
-}`n
+}
 .admin-hero-preview-card img {
     width: 200px;
     height: 100px;
@@ -3243,46 +3245,46 @@ textarea.form-control {
 .preview-info h5 {
     font-size: 1.1rem;
     margin-bottom: 5px;
-}`n
+}
 .preview-info p {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 8px;
-}`n
+}
 .preview-link {
     font-size: 0.75rem;
     color: var(--accent);
     display: block;
     margin-bottom: 5px;
-}`n
+}
 .last-updated {
     font-size: 0.7rem;
     color: rgba(255,255,255,0.3);
-}`n
+}
 /* Auction Management Refinements */
 .auction-details-row {
     background: rgba(0, 240, 255, 0.05);
     padding: 8px 12px;
     border-radius: 8px;
     margin: 10px 0;
-}`n
+}
 .highest-bid-val {
     color: var(--accent);
     font-weight: 800;
     font-size: 1.1rem;
-}`n
+}
 .bid-count-badge {
     background: rgba(255,255,255,0.1);
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 0.7rem;
     margin-left: 8px;
-}`n
+}
 .countdown-val {
     font-family: 'JetBrains Mono', monospace;
     color: #ff3b3b;
     font-weight: bold;
-}`n
+}
 /* Desktop Hover Effects */
 @media (min-width: 1024px) {
     .admin-card-wrap {
@@ -3670,7 +3672,6 @@ textarea.form-control {
 
 .plush-btn {
     padding: 12px 25px;
-    margin: 10px;
     font-size: 1rem;
     font-weight: 700;
     background: linear-gradient(135deg, var(--accent) 0%, #00a8ff 100%);
@@ -3700,6 +3701,7 @@ textarea.form-control {
     .auction-stats-summary {
         flex-wrap: wrap;
         gap: 10px;
+        margin-bottom: 10px;
     }
     .plush-btn {
         width: 100%;
@@ -4091,14 +4093,4 @@ textarea.form-control {
     color: var(--accent);
     text-decoration: underline;
     word-break: break-all;
-}
-
-.buy-tabs-nav {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 5px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
