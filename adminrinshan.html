@@ -65,8 +65,11 @@
             <button class="admin-tab" data-tab="current">
                 <i class="fa-solid fa-list-check"></i> Current
             </button>
-            <button class="admin-tab" data-tab="auctioned">
-                <i class="fa-solid fa-gavel"></i> Auctioned
+            <button class="admin-tab" data-tab="auction-manage">
+                <i class="fa-solid fa-gavel"></i> Auctions
+            </button>
+            <button class="admin-tab" data-tab="hero">
+                <i class="fa-solid fa-images"></i> Hero Section
             </button>
             <button class="admin-tab" data-tab="sold">
                 <i class="fa-solid fa-check-double"></i> Sold Out
@@ -87,9 +90,52 @@
             </div>
         </div>
 
-        <div id="tab-auctioned" class="admin-tab-content">
-            <div id="auctionedList" class="admin-list">
+        <div id="tab-auction-manage" class="admin-tab-content">
+            <div class="admin-action-bar rich-action-bar">
+                <div class="bar-left">
+                    <h3><i class="fa-solid fa-gavel"></i> Auction Management</h3>
+                    <div class="auction-stats-summary" id="auctionStatsSummary">
+                        <!-- Stats injected via JS -->
+                    </div>
+                </div>
+                <div class="bar-right" style="display:flex; gap:10px;">
+                    <button class="save-btn plush-btn" id="openAuctionBtn">
+                        <i class="fa-solid fa-plus-circle"></i> Create New Auction
+                    </button>
+                    <button class="save-btn plush-btn" id="openGiveawayBtn" style="background:linear-gradient(135deg, #ff6b6b, #ee5a6f);">
+                        <i class="fa-solid fa-gift"></i> Create Giveaway
+                    </button>
+                </div>
+            </div>
+            <div style="padding:15px 20px; background:rgba(0,0,0,0.2); border-radius:8px; margin-bottom:20px;">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <input type="checkbox" id="showEndedAuctions" style="width:18px; height:18px; cursor:pointer;">
+                    <span>Show Ended Auctions (History)</span>
+                </label>
+            </div>
+            <div id="auctionManageList" class="admin-list auction-grid-view">
                 <p class="loading-msg">Fetching auctions...</p>
+            </div>
+        </div>
+
+        <div id="tab-hero" class="admin-tab-content">
+            <div class="rich-action-bar">
+                <div class="bar-title-side">
+                    <h3><i class="fa-solid fa-rectangle-ad"></i> Hero Banner Control</h3>
+                    <p>Manage the dynamic slider on your home page</p>
+                </div>
+                <div class="bar-stats-side">
+                    <div class="auction-stats-summary" id="heroStatsSummary">
+                        <!-- Stats injected via JS -->
+                    </div>
+                    <button class="plush-btn" id="addHeroBtn">
+                        <i class="fa-solid fa-plus"></i> Add New Slide
+                    </button>
+                </div>
+            </div>
+
+            <div class="auction-grid-view" id="heroListContainer">
+                <p class="loading-msg">Fetching hero slides...</p>
             </div>
         </div>
 
