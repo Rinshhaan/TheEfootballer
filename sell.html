@@ -56,6 +56,7 @@
                                 <label for="idVideo" class="upload-box">
                                     <i class="fa-solid fa-video"></i>
                                     <span>Player Recording</span>
+                                    <small style="font-size:0.65rem; color:var(--text-muted);">(Optional, max 5MB)</small>
                                     <input type="file" id="idVideo" accept="video/*">
                                 </label>
                                 <div id="previewVideo" class="media-preview"></div>
@@ -130,7 +131,9 @@
                         </div>
                         <h3>Successfully Submitted!</h3>
                         <p>Your ID details have been sent to our waiting list for review.</p>
-                        <p class="redirect-sub">Redirecting to WhatsApp in 3s...</p>
+                        <p class="redirect-sub" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--accent); font-weight: 600;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Redirecting to WhatsApp for deal confirmation...
+                        </p>
                         <div class="success-progress"></div>
                     </div>
                 </div>
