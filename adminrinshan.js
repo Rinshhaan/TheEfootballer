@@ -119,15 +119,26 @@ let rawData = {
     giveaways: []
 };
 
+let loadedStates = {
+    waiting_list: false,
+    products: false,
+    auction_ids: false,
+    sold_out: false,
+    hero_slides: false,
+    giveaways: false
+};
+
 // ── Data Fetchers ──────────────────────────────────────
 function initFetch(path, containerId, templateFn, stateKey) {
     const container = document.getElementById(containerId);
     if (container) {
+        let titleColor = stateKey === 'auction_ids' ? '#ff6b6b' : 'var(--accent)';
+        let shadowColor = stateKey === 'auction_ids' ? 'rgba(255,107,107,0.6)' : 'rgba(0,240,255,0.6)';
         container.innerHTML = `
-            <div class="loading-skeleton" style="grid-column: 1/-1; width: 100%; height: 280px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                <div style="text-align:center; position: relative; z-index: 2;">
-                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.4));"></i>
-                    <p style="color:var(--text-muted); font-size:0.95rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">Decoding ${stateKey.replace('_', ' ')}...</p>
+            <div class="loading-skeleton" style="grid-column: 1/-1; padding: 60px 0; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align:center;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 3rem; color: ${titleColor}; margin-bottom: 15px; filter: drop-shadow(0 0 10px ${shadowColor});"></i>
+                    <p style="color:var(--text-muted); font-size:1.1rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">Fetching ${stateKey.replace('_', ' ')}...</p>
                 </div>
             </div>
         `;
@@ -135,6 +146,7 @@ function initFetch(path, containerId, templateFn, stateKey) {
 
     onValue(ref(db, path), (snap) => {
         const data = snap.val();
+        loadedStates[stateKey] = true;
         rawData[stateKey] = [];
         if (data) {
             Object.keys(data).reverse().forEach(key => {
@@ -226,6 +238,10 @@ function applySearch() {
     const containerId = currentTab.container;
     const templateFn = currentTab.tpl;
 
+    if (!loadedStates[activeKey] || (currentTab.includeGiveaways && !loadedStates['giveaways'])) {
+        return; // Retain skeleton loaders until fully loaded
+    }
+
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = '';
@@ -239,7 +255,7 @@ function applySearch() {
             (p.id || '').toLowerCase().includes(term);
         return match;
     });
-    
+
     // Filter auctions by ended status if on auction tab
     if (activeKey === 'auction_ids') {
         const showEnded = document.getElementById('showEndedAuctions')?.checked || false;
@@ -260,7 +276,7 @@ function applySearch() {
         container.appendChild(templateFn(item));
         if (activeKey === 'sold_out') totalRev += parsePrice(item.price);
     });
-    
+
     // Add giveaways to auction tab if enabled
     if (currentTab.includeGiveaways && rawData.giveaways) {
         rawData.giveaways.forEach(gw => {
@@ -288,7 +304,7 @@ const giveawayTpl = (item) => {
     const participantCount = item.participantCount || (item.participants ? Object.keys(item.participants).length : 0);
 
     const urls = item.mediaUrls || [];
-    let mediaHtml = urls.length > 0 
+    let mediaHtml = urls.length > 0
         ? `<img src="${urls[0]}" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">`
         : `<div style="width:100%; height:200px; background:rgba(255,107,107,0.1); display:flex; align-items:center; justify-content:center; border-radius:10px;"><i class="fa-solid fa-gift" style="font-size:3rem; color:#ff6b6b;"></i></div>`;
 
@@ -393,7 +409,7 @@ window.viewGiveawayParticipants = function (giveaway) {
     document.body.appendChild(participantModal);
 };
 
-window.removeParticipant = async function(giveawayId, participantId) {
+window.removeParticipant = async function (giveawayId, participantId) {
     if (!confirm('Remove this participant?')) return;
     try {
         await remove(ref(db, `giveaways/${giveawayId}/participants/${participantId}`));
@@ -1197,7 +1213,7 @@ function openEditAuctionModal(item) {
     const remainingMs = Math.max(0, currentEndTime - Date.now());
     const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
     const remainingMinutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     const modal = document.createElement('div');
     modal.className = 'admin-edit-modal active';
     modal.innerHTML = `
@@ -1273,7 +1289,7 @@ function openEditAuctionModal(item) {
             const addMinutes = parseInt(document.getElementById('eaMinutes').value) || 0;
             const timeExtension = (addHours * 60 * 60 * 1000) + (addMinutes * 60 * 1000);
             const newEndTime = currentEndTime + timeExtension;
-            
+
             const upd = {
                 title: document.getElementById('eaTitle').value,
                 playerInfo: document.getElementById('eaPlayers').value,
@@ -1336,23 +1352,23 @@ window.viewBidders = function (auction) {
 };
 
 // Remove bid function
-window.removeBid = async function(auctionId, bidId) {
+window.removeBid = async function (auctionId, bidId) {
     if (!confirm('Are you sure you want to remove this bid?')) return;
     try {
         await remove(ref(db, `auctions/${auctionId}/bids/${bidId}`));
-        
+
         // Recalculate highest bid
         const auctionRef = ref(db, `auctions/${auctionId}`);
         onValue(auctionRef, async (snap) => {
             const auction = snap.val();
             if (!auction) return;
-            
+
             const bids = auction.bids ? Object.values(auction.bids) : [];
             const highestBid = bids.length > 0 ? Math.max(...bids.map(b => b.price || 0)) : (parseInt(auction.price?.replace(/[^0-9]/g, '')) || 0);
-            
+
             await update(auctionRef, { highestBid });
             showToast("Bid removed successfully", "success");
-            
+
             // Refresh the bidders modal if open
             const modal = document.querySelector('.admin-edit-modal.active');
             if (modal && modal.querySelector('.bid-table-header')) {
