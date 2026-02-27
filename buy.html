@@ -36,7 +36,14 @@
         </div>
 
         <div class="buy-filters">
-            <!-- Price range dropdown -->
+            <!-- New Tab Switcher for Buy Page -->
+            <div class="buy-tabs-nav">
+                <button class="buy-tab active" data-view="grid"><i class="fa-solid fa-list"></i> Shop IDs</button>
+                <button class="buy-tab" data-view="auction"><i class="fa-solid fa-gavel"></i>
+                    Auctions/Giveaways</button>
+            </div>
+
+            <!-- Price range dropdown (only for Shop IDs) -->
             <div class="price-dropdown" id="priceDropdown">
                 <button class="price-dropdown-btn" id="priceDropdownBtn" type="button">
                     <i class="fa-solid fa-sliders"></i>
@@ -62,12 +69,19 @@
     </div>
 
     <!-- ══ PRODUCT GRID ══ -->
-    <main class="main-content buy-main">
+    <main class="main-content buy-main" id="shopView">
         <div id="product-grid" class="product-grid">
             <div class="grid-loading">
                 <i class="fa-solid fa-spinner fa-spin"></i>
                 <p>Loading IDs...</p>
             </div>
+        </div>
+    </main>
+
+    <!-- ══ AUCTION VIEW ══ -->
+    <main class="main-content buy-main" id="auctionView" style="display:none;">
+        <div id="auction-grid" class="product-grid">
+            <!-- Auctions loaded here -->
         </div>
     </main>
 
