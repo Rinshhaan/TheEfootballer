@@ -23,7 +23,13 @@ const soldRef = ref(db, 'sold_out');
 let activeItems = [];
 let soldItems = [];
 
+let isProductsLoaded = false;
+let isSoldLoaded = false;
+let isHeroLoaded = false;
+
 function combineAndRender() {
+    if (!isProductsLoaded || !isSoldLoaded || !isHeroLoaded) return;
+
     allProducts = [...activeItems, ...soldItems];
     // Sort by timestamp (descending)
     allProducts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -31,6 +37,7 @@ function combineAndRender() {
 }
 
 onValue(productsRef, (snap) => {
+    isProductsLoaded = true;
     activeItems = [];
     const data = snap.val();
     if (data) {
@@ -42,6 +49,7 @@ onValue(productsRef, (snap) => {
 });
 
 onValue(soldRef, (snap) => {
+    isSoldLoaded = true;
     soldItems = [];
     const data = snap.val();
     if (data) {
@@ -287,8 +295,9 @@ searchInput && searchInput.addEventListener('input', (e) => {
             </div>
         </div>
     `;
-    
+
     onValue(ref(db, 'hero_slides'), (snap) => {
+        isHeroLoaded = true;
         const data = snap.val();
         if (!data) {
             // Default slide if none in DB
@@ -299,6 +308,7 @@ searchInput && searchInput.addEventListener('input', (e) => {
                 img: "https://placehold.co/1200x600?text=Premium+eFootball+IDs",
                 badge: "✦ WELCOME"
             }]);
+            combineAndRender();
             return;
         }
 
@@ -312,6 +322,7 @@ searchInput && searchInput.addEventListener('input', (e) => {
         slidesData.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
         renderHeroSlides(slidesData);
+        combineAndRender();
     });
 
     function renderHeroSlides(slides) {
