@@ -251,7 +251,7 @@ searchInput && searchInput.addEventListener('input', (e) => {
 });
 
 // ============================================================
-// 7.  HERO CAROUSEL
+// 7.  HERO CAROUSEL (Dynamic from Firebase)
 // ============================================================
 (function initHeroCarousel() {
     const track = document.getElementById('heroTrack');
@@ -260,70 +260,108 @@ searchInput && searchInput.addEventListener('input', (e) => {
     const nextBtn = document.getElementById('heroNext');
     if (!track) return;
 
-    const slides = Array.from(track.querySelectorAll('.hero-slide'));
-    const total = slides.length;
-    let current = 0;
     let autoTimer = null;
+    let current = 0;
+    let total = 0;
 
-    // Build dots
-    slides.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.className = `hero-dot${i === 0 ? ' active' : ''}`;
-        d.setAttribute('aria-label', `Slide ${i + 1}`);
-        d.addEventListener('click', () => goTo(i));
-        dotsEl.appendChild(d);
-    });
+    function startAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(() => { if (total > 1) goTo(current + 1); }, 5000);
+    }
 
-    function goTo(idx, noTransition = false) {
-        if (noTransition) {
-            track.style.transition = 'none';
-        } else {
-            track.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        }
+    function goTo(idx) {
+        if (total <= 1) return;
         current = ((idx % total) + total) % total;
         track.style.transform = `translateX(-${current * 100}%)`;
-        // Update dots
         dotsEl.querySelectorAll('.hero-dot').forEach((d, i) =>
             d.classList.toggle('active', i === current)
         );
     }
 
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
+    // Show loading initially
+    track.innerHTML = `
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
+            <div style="text-align:center;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; color:var(--accent); margin-bottom:10px;"></i>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Loading hero slides...</p>
+            </div>
+        </div>
+    `;
+    
+    onValue(ref(db, 'hero_slides'), (snap) => {
+        const data = snap.val();
+        if (!data) {
+            // Default slide if none in DB
+            renderHeroSlides([{
+                title: "Premium eFootball IDs",
+                desc: "Explore our collection of beast accounts and budget deals.",
+                link: "buy.html",
+                img: "https://placehold.co/1200x600?text=Premium+eFootball+IDs",
+                badge: "✦ WELCOME"
+            }]);
+            return;
+        }
 
-    prevBtn && prevBtn.addEventListener('click', () => { resetAuto(); prev(); });
-    nextBtn && nextBtn.addEventListener('click', () => { resetAuto(); next(); });
+        const slidesData = Object.keys(data).map(k => ({
+            id: k,
+            ...data[k],
+            img: data[k].imageUrl // Map imageUrl to img for the template
+        }));
 
-    // Slide clicks – smooth scroll to section
-    slides.forEach(slide => {
-        slide.addEventListener('click', (e) => {
-            const href = slide.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
+        // Sort by timestamp if available
+        slidesData.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        renderHeroSlides(slidesData);
     });
 
-    // Auto advance
-    function startAuto() {
-        autoTimer = setInterval(next, 4000);
+    function renderHeroSlides(slides) {
+        track.innerHTML = '';
+        dotsEl.innerHTML = '';
+        total = slides.length;
+        current = 0;
+
+        slides.forEach((s, i) => {
+            // Slide
+            const slide = document.createElement('a');
+            slide.className = 'hero-slide';
+            if (s.link) slide.href = s.link;
+            if (s.img) slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(${s.img})`;
+
+            slide.innerHTML = `
+                <div class="hero-slide-inner">
+                    <span class="hero-badge" style="background:var(--accent);">${s.badge || '✦ INFO'}</span>
+                    <h2>${s.title}</h2>
+                    <p>${s.desc}</p>
+                    <span class="hero-cta">Explore Now <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            `;
+            track.appendChild(slide);
+
+            // Dot
+            const dot = document.createElement('button');
+            dot.className = `hero-dot${i === 0 ? ' active' : ''}`;
+            dot.onclick = () => { clearInterval(autoTimer); goTo(i); startAuto(); };
+            dotsEl.appendChild(dot);
+        });
+
+        track.style.transform = 'translateX(0)';
+        if (total > 1) startAuto();
     }
-    function resetAuto() {
-        clearInterval(autoTimer);
-        startAuto();
-    }
+
+    prevBtn?.addEventListener('click', () => { clearInterval(autoTimer); goTo(current - 1); startAuto(); });
+    nextBtn?.addEventListener('click', () => { clearInterval(autoTimer); goTo(current + 1); startAuto(); });
 
     // Touch swipe
     let touchStartX = 0;
     track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
     track.addEventListener('touchend', e => {
         const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) { resetAuto(); dx < 0 ? next() : prev(); }
+        if (Math.abs(dx) > 40) {
+            clearInterval(autoTimer);
+            dx < 0 ? goTo(current + 1) : goTo(current - 1);
+            startAuto();
+        }
     }, { passive: true });
-
-    startAuto();
 })();
 
 // ============================================================
