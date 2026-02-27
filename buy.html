@@ -71,9 +71,14 @@
     <!-- ══ PRODUCT GRID ══ -->
     <main class="main-content buy-main" id="shopView">
         <div id="product-grid" class="product-grid">
-            <div class="grid-loading">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <p>Loading IDs...</p>
+            <div class="grid-loading" style="grid-column: 1/-1; padding: 40px 0;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <i class="fa-solid fa-circle-notch fa-spin"
+                        style="font-size: 3rem; color: var(--accent); margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.6));"></i>
+                    <p
+                        style="color:var(--text-muted); font-size:1.1rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">
+                        Loading IDs...</p>
+                </div>
             </div>
         </div>
     </main>
@@ -81,7 +86,15 @@
     <!-- ══ AUCTION VIEW ══ -->
     <main class="main-content buy-main" id="auctionView" style="display:none;">
         <div id="auction-grid" class="product-grid">
-            <!-- Auctions loaded here -->
+            <div class="grid-loading" style="grid-column: 1/-1; padding: 40px 0;">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <i class="fa-solid fa-circle-notch fa-spin"
+                        style="font-size: 3rem; color: #ff6b6b; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,107,107,0.6));"></i>
+                    <p
+                        style="color:var(--text-muted); font-size:1.1rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">
+                        Connecting to Auctions...</p>
+                </div>
+            </div>
         </div>
     </main>
 
