@@ -130,16 +130,8 @@ onValue(soldRef, (snap) => {
     combineAndProcess();
 });
 
-// Fetch Auctions
 if (auctionGrid) {
-    auctionGrid.innerHTML = `
-        <div class="grid-loading" style="grid-column: 1/-1; padding: 40px 0;">
-            <div style="display:flex; flex-direction:column; align-items:center;">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,107,107,0.6));"></i>
-                <p style="color:var(--text-muted); font-size:1.1rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">Connecting to Auctions...</p>
-            </div>
-        </div>
-    `;
+    auctionGrid.innerHTML = Array(8).fill('<div class="product-card"><div class="skeleton-card-thumbnail"></div><div class="card-info"><div class="skeleton-text title"></div><div class="skeleton-text desc"></div><div class="skeleton-text price"></div></div></div>').join('');
 }
 
 onValue(ref(db, 'auctions'), (snap) => {
@@ -486,8 +478,8 @@ function openModal(product) {
         const slide = document.createElement('div');
         slide.className = `carousel-slide${i === 0 ? ' active' : ''}`;
         slide.innerHTML = isVid
-            ? `<video src="${url}" controls controlsList="nodownload" playsinline></video>`
-            : `<img src="${url}" alt="Slide ${i + 1}">`;
+            ? `<video src="${url}" controls controlsList="nodownload" playsinline ondblclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();"></video>`
+            : `<img src="${url}" alt="Slide ${i + 1}" style="cursor:zoom-in" onclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();">`;
         carouselEl.appendChild(slide);
     });
 
@@ -532,14 +524,7 @@ function renderAuctionsAndGiveaways() {
     if (!auctionGrid) return;
 
     if (!isAuctionsLoaded || !isGiveawaysLoaded) {
-        auctionGrid.innerHTML = `
-            <div class="grid-loading" style="grid-column: 1/-1; padding: 40px 0;">
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,107,107,0.6));"></i>
-                    <p style="color:var(--text-muted); font-size:1.1rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;">Connecting to Auctions...</p>
-                </div>
-            </div>
-        `;
+        auctionGrid.innerHTML = Array(8).fill('<div class="product-card"><div class="skeleton-card-thumbnail"></div><div class="card-info"><div class="skeleton-text title"></div><div class="skeleton-text desc"></div><div class="skeleton-text price"></div></div></div>').join('');
         return;
     }
 
@@ -893,8 +878,18 @@ function openGiveawayModal(gw) {
 
     giveawayModal.querySelector('#giveawayForm').onsubmit = async (e) => {
         e.preventDefault();
-        const name = document.getElementById('gwName').value;
-        const wa = document.getElementById('gwWa').value;
+        const name = document.getElementById('gwName').value.trim();
+        const wa = document.getElementById('gwWa').value.trim();
+
+        if (/^\d+$/.test(name)) {
+            alert("Name cannot contain only numbers. Please enter a valid name.");
+            return;
+        }
+
+        if (!/^\d{10,15}$/.test(wa)) {
+            alert("Please enter a valid WhatsApp number (10-15 digits only).");
+            return;
+        }
         const btn = e.target.querySelector('.bid-btn');
 
         btn.disabled = true;
@@ -954,8 +949,18 @@ function openBidModal(auc) {
     form.onsubmit = async (e) => {
         e.preventDefault();
         const amt = parseInt(document.getElementById('bidAmount').value);
-        const name = document.getElementById('bidName').value;
-        const wa = document.getElementById('bidWa').value;
+        const name = document.getElementById('bidName').value.trim();
+        const wa = document.getElementById('bidWa').value.trim();
+
+        if (/^\d+$/.test(name)) {
+            alert("Name cannot contain only numbers. Please enter a valid name.");
+            return;
+        }
+
+        if (!/^\d{10,15}$/.test(wa)) {
+            alert("Please enter a valid WhatsApp number (10-15 digits only).");
+            return;
+        }
         const btn = form.querySelector('.save-btn-modal');
 
         if (amt <= auc.highestBid) {
