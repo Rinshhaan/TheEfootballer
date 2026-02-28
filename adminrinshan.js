@@ -392,14 +392,18 @@ window.viewGiveawayParticipants = function (giveaway) {
                 <h3 style="margin:0;"><i class="fa-solid fa-users"></i> Participants - ${giveaway.title || 'Giveaway'}</h3>
                 <span class="bid-count-badge" style="background:linear-gradient(135deg, #ff6b6b, #ee5a6f); color:#fff; font-weight:800;">${participantCount} ENTRIES</span>
             </div>
-            <div class="bid-table-header" style="display:grid; grid-template-columns:2fr 1.5fr 1.5fr auto; gap:10px; padding:15px 25px; background:rgba(0,0,0,0.2); font-weight:600; font-size:0.85rem; text-transform:uppercase;">
-                <div>Name</div>
-                <div>WhatsApp</div>
-                <div>Entry Time</div>
-                <div style="text-align:center;">Action</div>
-            </div>
-            <div style="max-height:450px; overflow-y:auto; background:rgba(0,0,0,0.1);">
-                ${listHtml}
+            <div style="width:100%; overflow-x:auto;">
+                <div style="min-width: 500px;">
+                    <div class="bid-table-header">
+                        <div>Name</div>
+                        <div>WhatsApp</div>
+                        <div>Entry Time</div>
+                        <div style="text-align:center;">Action</div>
+                    </div>
+                    <div style="max-height:450px; overflow-y:auto; background:rgba(0,0,0,0.1);">
+                        ${listHtml}
+                    </div>
+                </div>
             </div>
             <div style="padding:15px 25px; background:rgba(0,0,0,0.2);">
                 <button class="save-btn" style="width:100%;" onclick="this.closest('.admin-edit-modal').remove()">Close</button>
@@ -473,12 +477,12 @@ function openEditGiveawayModal(item) {
         inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
         inp.onchange = async (e) => {
             for (const f of e.target.files) {
-                if (f.size > 7 * 1024 * 1024) {
-                    alert(`File "${f.name}" is too large. Max 7MB.`);
+                if (f.size > 14.5 * 1024 * 1024) {
+                    alert(`File "${f.name}" is too large. Max 14.5MB.`);
                     continue;
                 }
                 const b64 = await toBase64(f);
-                if (b64.length > 10485760) {
+                if (b64.length > 20971520) {
                     alert(`File "${f.name}" exceeds size limit.`);
                     continue;
                 }
@@ -1038,19 +1042,36 @@ editForm.addEventListener('submit', async (e) => {
             return;
         }
 
+        const waValue = document.getElementById('editSellerWa').value.trim();
+        if (waValue && !/^\d{10,15}$/.test(waValue)) {
+            showToast("WhatsApp number must be 10-15 digits only.", "error");
+            setLoading(saveBtn, false);
+            return;
+        }
+
+        const nameValue = document.getElementById('editSellerName').value.trim();
+        if (nameValue && /^\d+$/.test(nameValue)) {
+            showToast("Seller name cannot contain only numbers.", "error");
+            setLoading(saveBtn, false);
+            return;
+        }
+
         try {
             const updated = {
                 ...original,
-                title: document.getElementById('editTitle').value,
-                playerInfo: document.getElementById('editPlayers').value,
-                price: `₹${document.getElementById('editPrice').value}`,
-                sellerName: document.getElementById('editSellerName').value,
-                sellerWa: document.getElementById('editSellerWa').value,
-                section: document.getElementById('editSection').value,
-                stockOut: isMarkedSoldNow,
-                mediaUrls: editingMediaUrls, // Save updated media list
-                status: fromPath === 'waiting_list' ? 'current' : original.status
+                title: document.getElementById('editTitle').value || '',
+                playerInfo: document.getElementById('editPlayers').value || '',
+                price: `₹${document.getElementById('editPrice').value || '0'}`,
+                sellerName: document.getElementById('editSellerName').value || '',
+                sellerWa: document.getElementById('editSellerWa').value || '',
+                section: document.getElementById('editSection').value || 'auto',
+                stockOut: isMarkedSoldNow || false,
+                mediaUrls: editingMediaUrls || [], // Save updated media list
+                status: fromPath === 'waiting_list' ? 'current' : (original.status || 'current')
             };
+
+            // Remove any undefined keys to prevent Firebase rejection
+            Object.keys(updated).forEach(k => updated[k] === undefined && delete updated[k]);
 
             // If it's a new Sold Out check, move it
             if (isMarkedSoldNow && fromPath !== 'sold_out') {
@@ -1332,15 +1353,19 @@ window.viewBidders = function (auction) {
                 <span class="bid-count-badge" style="background:var(--accent); color:#000; font-weight:800;">${bids.length} BIDS</span>
             </div>
             
-            <div class="bid-table-header" style="display:grid; grid-template-columns:2fr 1.5fr 1fr auto; gap:10px; padding:15px 25px; background:rgba(0,0,0,0.2); font-weight:600; font-size:0.85rem; text-transform:uppercase;">
-                <div>User Name</div>
-                <div>Contact</div>
-                <div style="text-align:right;">Offer</div>
-                <div style="text-align:center;">Action</div>
-            </div>
+            <div style="width:100%; overflow-x:auto;">
+                <div style="min-width: 500px;">
+                    <div class="bid-table-header">
+                        <div>User Name</div>
+                        <div>Contact</div>
+                        <div style="text-align:right;">Offer</div>
+                        <div style="text-align:center;">Action</div>
+                    </div>
 
-            <div style="max-height:450px; overflow-y:auto; background:rgba(0,0,0,0.1);">
-                ${listHtml}
+                    <div style="max-height:450px; overflow-y:auto; background:rgba(0,0,0,0.1);">
+                        ${listHtml}
+                    </div>
+                </div>
             </div>
 
             <div style="padding:15px 25px; background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.05);">
@@ -1435,12 +1460,12 @@ document.getElementById('openGiveawayBtn')?.addEventListener('click', () => {
         inp.onchange = async (e) => {
             const files = Array.from(e.target.files);
             for (const file of files) {
-                if (file.size > 7 * 1024 * 1024) {
-                    alert(`File "${file.name}" is too large. Max 7MB.`);
+                if (file.size > 14.5 * 1024 * 1024) {
+                    alert(`File "${file.name}" is too large. Max 14.5MB.`);
                     continue;
                 }
                 const b64 = await toBase64(file);
-                if (b64.length > 10485760) {
+                if (b64.length > 20971520) {
                     alert(`File "${file.name}" exceeds size limit after encoding.`);
                     continue;
                 }
@@ -1567,4 +1592,21 @@ document.getElementById('openAuctionBtn')?.addEventListener('click', () => {
             setLoading(btn, false);
         }
     };
+});
+
+// ── Global Full Screen Media Viewer ─────────────────────
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.edit-media-item') && (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO')) {
+        if (!document.fullscreenElement) {
+            if (e.target.requestFullscreen) {
+                e.target.requestFullscreen();
+            } else if (e.target.webkitRequestFullscreen) {
+                e.target.webkitRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
 });
