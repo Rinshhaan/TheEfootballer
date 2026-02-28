@@ -288,11 +288,11 @@ searchInput && searchInput.addEventListener('input', (e) => {
 
     // Show loading initially
     track.innerHTML = `
-        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
-            <div style="text-align:center;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; color:var(--accent); margin-bottom:10px;"></i>
-                <p style="color:var(--text-muted); font-size:0.9rem;">Loading hero slides...</p>
-            </div>
+        <div class="hero-skeleton-card">
+            <div class="hero-skeleton-text badge"></div>
+            <div class="hero-skeleton-text title"></div>
+            <div class="hero-skeleton-text desc"></div>
+            <div class="hero-skeleton-text desc" style="width: 30%;"></div>
         </div>
     `;
 
@@ -401,8 +401,8 @@ function openModal(product) {
         const slide = document.createElement('div');
         slide.className = `carousel-slide${i === 0 ? ' active' : ''}`;
         slide.innerHTML = isVid
-            ? `<video src="${url}" controls controlsList="nodownload" playsinline></video>`
-            : `<img src="${url}" alt="Slide ${i + 1}">`;
+            ? `<video src="${url}" controls controlsList="nodownload" playsinline ondblclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();"></video>`
+            : `<img src="${url}" alt="Slide ${i + 1}" style="cursor:zoom-in" onclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();">`;
         carouselEl.appendChild(slide);
     });
 
