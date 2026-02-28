@@ -68,7 +68,7 @@ function handlePreviewWithValidation(input, container, isVideo = false, maxSizeM
     input.addEventListener('change', () => {
         container.innerHTML = '';
         const files = Array.from(input.files);
-        
+
         // Validate file sizes and show warnings
         files.forEach(file => {
             const sizeMB = file.size / 1024 / 1024;
@@ -76,12 +76,12 @@ function handlePreviewWithValidation(input, container, isVideo = false, maxSizeM
                 alert(`Warning: "${file.name}" is ${sizeMB.toFixed(2)}MB (max ${maxSizeMB}MB). It will be skipped during upload.`);
                 return; // Skip preview for oversized files
             }
-            
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 const previewWrapper = document.createElement('div');
                 previewWrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:2px;';
-                
+
                 if (isVideo) {
                     const video = document.createElement('video');
                     video.src = e.target.result;
@@ -96,13 +96,13 @@ function handlePreviewWithValidation(input, container, isVideo = false, maxSizeM
                     img.className = 'preview-thumb';
                     previewWrapper.appendChild(img);
                 }
-                
+
                 // Show file size info
                 const sizeInfo = document.createElement('span');
                 sizeInfo.style.cssText = 'font-size:0.6rem; color:var(--text-muted);';
                 sizeInfo.textContent = `${sizeMB.toFixed(2)}MB`;
                 previewWrapper.appendChild(sizeInfo);
-                
+
                 container.appendChild(previewWrapper);
             };
             reader.readAsDataURL(file);
@@ -111,7 +111,7 @@ function handlePreviewWithValidation(input, container, isVideo = false, maxSizeM
 }
 
 handlePreviewWithValidation(idScreenshots, previewS, false, 7);
-handlePreviewWithValidation(idVideo, previewV, true, 5);
+handlePreviewWithValidation(idVideo, previewV, true, 14.5);
 handlePreviewWithValidation(konamiProof, previewK, false, 7);
 
 // ── Form Submission ─────────────────────────────────────
@@ -124,7 +124,7 @@ sellForm?.addEventListener('submit', async (e) => {
         konamiProof.focus();
         return;
     }
-    
+
     if (!idScreenshots.files || idScreenshots.files.length === 0) {
         alert("Please upload at least one Squad Screenshot.");
         idScreenshots.focus();
@@ -137,8 +137,19 @@ sellForm?.addEventListener('submit', async (e) => {
         return;
     }
 
-    const userName = document.getElementById('userName').value;
-    const waNumber = document.getElementById('waNumber').value;
+    const userName = document.getElementById('userName').value.trim();
+    const waNumber = document.getElementById('waNumber').value.trim();
+
+    if (/^\d+$/.test(userName)) {
+        alert("Name cannot contain only numbers. Please enter a valid name.");
+        return;
+    }
+
+    if (!/^\d{10,15}$/.test(waNumber)) {
+        alert("Please enter a valid WhatsApp number (10-15 digits only).");
+        return;
+    }
+
     const paidCardsRaw = document.getElementById('paidCards').value;
     const idPrice = document.getElementById('idPrice').value;
     const isKonami = document.getElementById('isKonamiOnly').checked;
@@ -165,39 +176,39 @@ sellForm?.addEventListener('submit', async (e) => {
             ...Array.from(idVideo.files),
             konamiProof.files[0]
         ].filter(f => f); // Remove null/undefined
-        
+
         // Check each file size
         for (const file of allFiles) {
             if (file.size > MAX_FILE_SIZE) {
                 throw new Error(
                     `File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). ` +
-                    `Maximum file size is 7MB. Please compress or use a smaller file.`
+                    `Maximum file size is 14.5MB. Please compress or use a smaller file.`
                 );
             }
         }
-        
+
         // Prepare media URLs (base64) - compress images, handle videos separately
         const mediaPromises = [];
-        
+
         // Process screenshots (compress images)
         for (const file of Array.from(idScreenshots.files)) {
             mediaPromises.push(compressImage(file));
         }
-        
+
         // Process videos (skip if too large, or compress if possible)
         for (const file of Array.from(idVideo.files)) {
-            if (file.size > 5 * 1024 * 1024) { // Skip videos larger than 5MB
+            if (file.size > 14.5 * 1024 * 1024) { // Skip videos larger than 14.5MB
                 console.warn(`Video "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB) and will be skipped.`);
                 continue; // Skip this video
             }
             mediaPromises.push(toBase64(file));
         }
-        
+
         // Process Konami proof (compress image)
         if (konamiProof.files[0]) {
             mediaPromises.push(compressImage(konamiProof.files[0]));
         }
-        
+
         const mediaUrls = await Promise.all(mediaPromises);
 
         const idData = {
@@ -222,7 +233,7 @@ sellForm?.addEventListener('submit', async (e) => {
             btnText.textContent = 'Post to Waiting List';
             btnText.style.opacity = '1'; // Show text again
         }
-        
+
         // Show Success Message
         formSuccess.classList.add('active');
         const redirectSub = formSuccess.querySelector('.redirect-sub');
@@ -234,7 +245,7 @@ sellForm?.addEventListener('submit', async (e) => {
         setTimeout(() => {
             const adminNum = "918078240018";
             const msg = `👤 I am ${userName}\n` +
-                ` and I need to sell the ${idData.title} ID \n`+
+                ` and I need to sell the ${idData.title} ID \n` +
                 ` with ${idData.playerInfo}.\n` +
                 ` My expected price for this ID is ${idData.price}\n\n` +
                 ` Can we make a deal?`;
@@ -245,21 +256,21 @@ sellForm?.addEventListener('submit', async (e) => {
 
     } catch (err) {
         console.error("Submission failed:", err);
-        
+
         // Show user-friendly error message
         let errorMsg = "Failed to post ID. ";
         if (err.message) {
             if (err.message.includes('too large')) {
                 errorMsg = err.message;
             } else if (err.message.includes('Firebase')) {
-                errorMsg = "File size exceeds limit. Please use smaller files (max 7MB each).";
+                errorMsg = "File size exceeds limit. Please use smaller files (max 14.5MB each).";
             } else {
                 errorMsg += err.message;
             }
         } else {
             errorMsg += "Please try again.";
         }
-        
+
         alert(errorMsg);
         postBtn.classList.remove('loading');
         postBtn.disabled = false;
@@ -271,27 +282,27 @@ sellForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// Firebase limit: 10MB per value (base64 increases size by ~33%, so max ~7.5MB original)
-const MAX_FILE_SIZE = 7 * 1024 * 1024; // 7MB in bytes
+// Firebase limit check adjusted to allow base64 string up to 20MB
+const MAX_FILE_SIZE = 14.5 * 1024 * 1024; // 14.5MB in bytes
 const MAX_IMAGE_SIZE = 2000; // Max width/height for images
 
 // Compress image before converting to base64
 function compressImage(file, maxWidth = MAX_IMAGE_SIZE, maxHeight = MAX_IMAGE_SIZE, quality = 0.8) {
     return new Promise((resolve, reject) => {
         if (!file) { resolve(''); return; }
-        
+
         // If it's a video, skip compression (we'll handle separately)
         if (file.type.startsWith('video/')) {
             toBase64(file).then(resolve).catch(reject);
             return;
         }
-        
+
         // Check file size first
         if (file.size > MAX_FILE_SIZE) {
-            reject(new Error(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum size is 7MB.`));
+            reject(new Error(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum size is 14.5MB.`));
             return;
         }
-        
+
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
@@ -299,7 +310,7 @@ function compressImage(file, maxWidth = MAX_IMAGE_SIZE, maxHeight = MAX_IMAGE_SI
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
-                
+
                 // Calculate new dimensions
                 if (width > height) {
                     if (width > maxWidth) {
@@ -312,21 +323,21 @@ function compressImage(file, maxWidth = MAX_IMAGE_SIZE, maxHeight = MAX_IMAGE_SI
                         height = maxHeight;
                     }
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
-                
+
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                
+
                 // Convert to base64 with compression
                 const compressedBase64 = canvas.toDataURL(file.type || 'image/jpeg', quality);
-                
+
                 // Check if compressed size is still too large
-                if (compressedBase64.length > 10485760) {
+                if (compressedBase64.length > 20971520) {
                     // Try with lower quality
                     const lowerQuality = canvas.toDataURL(file.type || 'image/jpeg', 0.6);
-                    if (lowerQuality.length > 10485760) {
+                    if (lowerQuality.length > 20971520) {
                         reject(new Error(`File "${file.name}" is too large even after compression. Please use a smaller file.`));
                         return;
                     }
@@ -347,20 +358,20 @@ function compressImage(file, maxWidth = MAX_IMAGE_SIZE, maxHeight = MAX_IMAGE_SI
 function toBase64(file) {
     return new Promise((resolve, reject) => {
         if (!file) { resolve(''); return; }
-        
+
         // Check file size before processing
         if (file.size > MAX_FILE_SIZE) {
-            reject(new Error(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum size is 7MB.`));
+            reject(new Error(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum size is 14.5MB.`));
             return;
         }
-        
+
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
             const result = reader.result;
-            // Check base64 size (Firebase limit is 10MB)
-            if (result.length > 10485760) {
-                reject(new Error(`File "${file.name}" exceeds Firebase size limit after encoding. Please use a smaller file.`));
+            // Check base64 size (Increased string limit to 20MB)
+            if (result.length > 20971520) {
+                reject(new Error(`File "${file.name}" exceeds size limit after encoding. Please use a smaller file.`));
                 return;
             }
             resolve(result);
