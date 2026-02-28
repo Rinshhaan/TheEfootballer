@@ -528,6 +528,7 @@ button {
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
     position: relative;
     flex-shrink: 0;
+    margin-top: 10px;
 }
 
 /* In rows: fixed width */
@@ -886,6 +887,7 @@ button {
     background: var(--card-bg);
     width: 100%;
     max-width: 640px;
+    padding: 15px;
     max-height: 90vh;
     border-radius: 20px;
     border: 1.5px solid rgba(0, 240, 255, 0.3);
@@ -3209,6 +3211,7 @@ textarea.form-control {
     border-radius: 8px;
     cursor: pointer;
 }
+
 /* -- Admin UI Refinements -------------------------- */
 .current-hero-preview {
     margin-top: 30px;
@@ -3234,33 +3237,38 @@ textarea.form-control {
     padding: 15px;
     border-radius: 12px;
 }
+
 .admin-hero-preview-card img {
     width: 200px;
     height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .preview-info h5 {
     font-size: 1.1rem;
     margin-bottom: 5px;
 }
+
 .preview-info p {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 8px;
 }
+
 .preview-link {
     font-size: 0.75rem;
     color: var(--accent);
     display: block;
     margin-bottom: 5px;
 }
+
 .last-updated {
     font-size: 0.7rem;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255, 255, 255, 0.3);
 }
+
 /* Auction Management Refinements */
 .auction-details-row {
     background: rgba(0, 240, 255, 0.05);
@@ -3268,28 +3276,33 @@ textarea.form-control {
     border-radius: 8px;
     margin: 10px 0;
 }
+
 .highest-bid-val {
     color: var(--accent);
     font-weight: 800;
     font-size: 1.1rem;
 }
+
 .bid-count-badge {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 0.7rem;
     margin-left: 8px;
 }
+
 .countdown-val {
     font-family: 'JetBrains Mono', monospace;
     color: #ff3b3b;
     font-weight: bold;
 }
+
 /* Desktop Hover Effects */
 @media (min-width: 1024px) {
     .admin-card-wrap {
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
     }
+
     .admin-card-wrap:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
@@ -3298,6 +3311,7 @@ textarea.form-control {
 
 /* -- Mobile Responsiveness Fixes ------------------ */
 @media (max-width: 768px) {
+
     /* Hero Preview Stacking */
     .admin-hero-preview-card {
         flex-direction: column;
@@ -3349,9 +3363,10 @@ textarea.form-control {
         padding: 20px 10px;
     }
 
-    .admin-form .form-group input, 
+    .admin-form .form-group input,
     .admin-form .form-group textarea {
-        font-size: 16px; /* Prevent iOS zoom */
+        font-size: 16px;
+        /* Prevent iOS zoom */
     }
 }
 
@@ -3399,7 +3414,10 @@ textarea.form-control {
     transition: 0.3s;
 }
 
-.close-rich-modal:hover { background: var(--accent); color: #000; }
+.close-rich-modal:hover {
+    background: var(--accent);
+    color: #000;
+}
 
 .auction-modal-grid {
     display: grid;
@@ -3412,7 +3430,8 @@ textarea.form-control {
     min-height: 400px;
 }
 
-.rich-carousel, .rich-carousel-track {
+.rich-carousel,
+.rich-carousel-track {
     width: 100%;
     height: 100%;
     position: relative;
@@ -3428,7 +3447,9 @@ textarea.form-control {
     justify-content: center;
 }
 
-.rich-slide.active { opacity: 1; }
+.rich-slide.active {
+    opacity: 1;
+}
 
 .rich-slide img {
     width: 100%;
@@ -3459,7 +3480,11 @@ textarea.form-control {
     transition: 0.3s;
 }
 
-.rich-carousel-nav button:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+.rich-carousel-nav button:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
 
 .auction-modal-details {
     padding: 40px;
@@ -3479,10 +3504,23 @@ textarea.form-control {
     margin-bottom: 10px;
 }
 
-.status-chip.live { background: rgba(255, 59, 59, 0.2); color: #ff3b3b; border: 1px solid rgba(255, 59, 59, 0.3); }
-.status-chip.expired { background: rgba(255, 255, 255, 0.1); color: #888; border: 1px solid rgba(255, 255, 255, 0.2); }
+.status-chip.live {
+    background: rgba(255, 59, 59, 0.2);
+    color: #ff3b3b;
+    border: 1px solid rgba(255, 59, 59, 0.3);
+}
 
-.auction-title { font-size: 2rem; color: #fff; line-height: 1.2; }
+.status-chip.expired {
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auction-title {
+    font-size: 2rem;
+    color: #fff;
+    line-height: 1.2;
+}
 
 .auction-stats {
     display: grid;
@@ -3497,13 +3535,44 @@ textarea.form-control {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stat-box label { display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-.stat-value { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
-.top-bidder-name { font-size: 0.8rem; color: #fff; margin-top: 5px; opacity: 0.8; }
-.timer-ticker { font-family: 'JetBrains Mono', monospace; color: #fff; }
+.stat-box label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
 
-.auction-description h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; }
-.auction-description p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.top-bidder-name {
+    font-size: 0.8rem;
+    color: #fff;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.timer-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    color: #fff;
+}
+
+.auction-description h4 {
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.auction-description p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
 
 .place-bid-btn-rich {
     width: 100%;
@@ -3523,32 +3592,67 @@ textarea.form-control {
     box-shadow: 0 10px 20px rgba(0, 240, 255, 0.2);
 }
 
-.place-bid-btn-rich:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 240, 255, 0.3); }
-.place-bid-btn-rich:disabled { background: #333; color: #666; cursor: not-allowed; box-shadow: none; }
+.place-bid-btn-rich:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 240, 255, 0.3);
+}
+
+.place-bid-btn-rich:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
 /* Admin UI Richness */
 .admin-tabs-content {
     animation: fadeIn 0.4s ease-out;
 }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .current-hero-preview {
-    background: linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%);
     border-style: solid;
     border-width: 1px;
     transition: 0.3s;
 }
 
-.current-hero-preview:hover { border-color: var(--accent); }
+.current-hero-preview:hover {
+    border-color: var(--accent);
+}
 
 /* Responsive Auction Modal */
 @media (max-width: 900px) {
-    .auction-modal-grid { grid-template-columns: 1fr; }
-    .auction-modal-gallery { min-height: 300px; }
-    .auction-modal-details { padding: 25px; }
-    .auction-title { font-size: 1.6rem; }
-    .stat-value { font-size: 1.3rem; }
+    .auction-modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .auction-modal-gallery {
+        min-height: 300px;
+    }
+
+    .auction-modal-details {
+        padding: 25px;
+    }
+
+    .auction-title {
+        font-size: 1.6rem;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+    }
 }
 
 /* -- Performance & UX Refinements ------------------ */
@@ -3561,8 +3665,13 @@ textarea.form-control {
 }
 
 @keyframes skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .auction-modal-content {
@@ -3572,13 +3681,19 @@ textarea.form-control {
     scrollbar-color: var(--accent) transparent;
 }
 
-.auction-modal-content::-webkit-scrollbar { width: 6px; }
-.auction-modal-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+.auction-modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.auction-modal-content::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+}
 
 /* Detailed Bid List Styles */
 .bid-table-header {
-    display: grid;
-    grid-template-columns: 1.5fr 1.2fr 1fr;
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
     background: rgba(255, 255, 255, 0.05);
     font-size: 0.75rem;
@@ -3589,19 +3704,31 @@ textarea.form-control {
 }
 
 .bid-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1.2fr 1fr;
+    display: flex;
+    justify-content: space-between;
     padding: 12px 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     align-items: center;
     transition: 0.2s;
 }
 
-.bid-row:hover { background: rgba(255, 255, 255, 0.02); }
-.bid-row.highest-bid-row { background: rgba(0, 240, 255, 0.05); }
+.bid-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
 
-.bid-phone { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; }
-.bid-phone:hover { color: var(--accent); }
+.bid-row.highest-bid-row {
+    background: rgba(0, 240, 255, 0.05);
+}
+
+.bid-phone {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.bid-phone:hover {
+    color: var(--accent);
+}
 
 /* Card Bidder Name Styling */
 .top-bidder-display {
@@ -3698,11 +3825,13 @@ textarea.form-control {
         gap: 20px;
         padding: 20px;
     }
+
     .auction-stats-summary {
         flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 10px;
     }
+
     .plush-btn {
         width: 100%;
         justify-content: center;
@@ -3776,14 +3905,31 @@ textarea.form-control {
 
 /* -- Admin Dashboard Micro-animations ----------- */
 @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes popIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    70% { transform: scale(1.05); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .rich-action-bar .bar-left h3 {
@@ -3794,9 +3940,17 @@ textarea.form-control {
     animation: popIn 0.4s ease-out backwards;
 }
 
-.auction-stats-summary .stat-pill:nth-child(1) { animation-delay: 0.1s; }
-.auction-stats-summary .stat-pill:nth-child(2) { animation-delay: 0.2s; }
-.auction-stats-summary .stat-pill:nth-child(3) { animation-delay: 0.3s; }
+.auction-stats-summary .stat-pill:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.auction-stats-summary .stat-pill:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.auction-stats-summary .stat-pill:nth-child(3) {
+    animation-delay: 0.3s;
+}
 
 .plush-btn {
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s backwards;
@@ -3804,8 +3958,13 @@ textarea.form-control {
 
 /* -- Premium Loading Skeletons ----------------- */
 @keyframes shimmer {
-    0% { background-position: -468px 0; }
-    100% { background-position: 468px 0; }
+    0% {
+        background-position: -468px 0;
+    }
+
+    100% {
+        background-position: 468px 0;
+    }
 }
 
 .loading-skeleton {
@@ -3818,6 +3977,80 @@ textarea.form-control {
     animation: shimmer 1.5s linear infinite forwards;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Card Skeleton Specifics */
+.skeleton-card-thumbnail {
+    width: 100%;
+    height: 200px;
+    background: #1a1a1e;
+    background-image: linear-gradient(to right, #1a1a1e 0%, #2a2a2e 20%, #1a1a1e 40%, #1a1a1e 100%);
+    background-size: 800px 200px;
+    animation: shimmer 1.5s linear infinite forwards;
+}
+
+.skeleton-text {
+    height: 15px;
+    background: #1a1a1e;
+    background-image: linear-gradient(to right, #1a1a1e 0%, #2a2a2e 20%, #1a1a1e 40%, #1a1a1e 100%);
+    background-size: 800px 15px;
+    animation: shimmer 1.5s linear infinite forwards;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text.title {
+    height: 20px;
+    width: 70%;
+    margin-bottom: 15px;
+}
+
+.skeleton-text.desc {
+    height: 12px;
+    width: 90%;
+}
+
+.skeleton-text.price {
+    height: 25px;
+    width: 40%;
+    margin-top: 15px;
+}
+
+/* Hero Skeleton Specifics */
+.hero-skeleton-card {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 60px;
+    background: #1a1a1e;
+    background-image: linear-gradient(to right, #1a1a1e 0%, #2a2a2e 20%, #1a1a1e 40%, #1a1a1e 100%);
+    background-size: 1500px 600px;
+    animation: shimmer 1.5s linear infinite forwards;
+}
+
+.hero-skeleton-text {
+    height: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.hero-skeleton-text.title {
+    width: 50%;
+    height: 40px;
+}
+
+.hero-skeleton-text.desc {
+    width: 40%;
+}
+
+.hero-skeleton-text.badge {
+    width: 100px;
+    height: 30px;
+    border-radius: 30px;
 }
 
 /* -- Auction Grid View ------------------------- */
@@ -3934,7 +4167,9 @@ textarea.form-control {
     color: #fff;
 }
 
-.stat-box .value.accent { color: var(--accent); }
+.stat-box .value.accent {
+    color: var(--accent);
+}
 
 .bid-ledger-wrap {
     background: rgba(0, 0, 0, 0.4);
@@ -3970,10 +4205,19 @@ textarea.form-control {
     transition: 0.2s;
 }
 
-.ledger-row:hover { background: rgba(255, 255, 255, 0.03); }
+.ledger-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
 
-.ledger-row .name { color: #fff; font-weight: 600; }
-.ledger-row .price { color: var(--accent); font-weight: 800; }
+.ledger-row .name {
+    color: #fff;
+    font-weight: 600;
+}
+
+.ledger-row .price {
+    color: var(--accent);
+    font-weight: 800;
+}
 
 .admin-card-footer {
     padding: 20px 25px;
