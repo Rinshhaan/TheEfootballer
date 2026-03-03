@@ -376,18 +376,17 @@ function removeLoadMoreObserver() {
 // 6.  BUILD CARD
 // ============================================================
 function buildCard(product) {
-    const urls = product.mediaUrls || [];
-    let mediaHtml = '';
     const isSold = product.stockOut || product.status === 'sold';
-
-    if (urls.length > 0) {
-        const firstUrl = urls[0];
+    // Single Media Display (Reverted from Fading)
+    const firstUrl = (product.mediaUrls && product.mediaUrls[0]) || '';
+    let mediaHtml = '';
+    if (firstUrl) {
         const isVid = (typeof firstUrl === 'string' && (firstUrl.includes('video/') || firstUrl.includes('.mp4') || firstUrl.startsWith('data:video')));
         mediaHtml = isVid
-            ? `<video src="${firstUrl}" muted loop playsinline style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;"></video>`
-            : `<img src="${firstUrl}" alt="${product.title}" style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;">`;
+            ? `<video src="${firstUrl}" muted loop playsinline></video>`
+            : `<img src="${firstUrl}" alt="${product.title}">`;
     } else {
-        mediaHtml = `<img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder" style="width:100%; height:100%; object-fit:cover;">`;
+        mediaHtml = `<img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder">`;
     }
 
     const card = document.createElement('div');
@@ -404,15 +403,12 @@ function buildCard(product) {
             <div class="view-tag">view <i class="fa-solid fa-arrow-right"></i></div>
         </div>`;
 
-    // Hover Video Logic
-    const videos = card.querySelectorAll('video');
-    videos.forEach(v => {
-        card.addEventListener('mouseenter', () => v.play().catch(() => { }));
-        card.addEventListener('mouseleave', () => {
-            v.pause();
-            v.currentTime = 0;
-        });
-    });
+    // Hover Video Preview
+    const mainMedia = card.querySelector('.card-thumbnail video');
+    if (mainMedia) {
+        card.addEventListener('mouseenter', () => mainMedia.play().catch(() => { }));
+        card.addEventListener('mouseleave', () => { mainMedia.pause(); mainMedia.currentTime = 0; });
+    }
 
     card.addEventListener('click', () => openModal(product));
 
@@ -531,8 +527,7 @@ function renderAuctionsAndGiveaways() {
             </div>
         `;
         const giveawayGrid = document.createElement('div');
-        giveawayGrid.className = 'product-grid';
-        giveawayGrid.style.cssText = 'grid-column: 1/-1;';
+        giveawayGrid.className = 'auction-giveaway-grid';
 
         filteredGiveaways.forEach(gw => {
             const card = buildGiveawayCard(gw);
@@ -554,8 +549,7 @@ function renderAuctionsAndGiveaways() {
             </div>
         `;
         const auctionGridInner = document.createElement('div');
-        auctionGridInner.className = 'product-grid';
-        auctionGridInner.style.cssText = 'grid-column: 1/-1;';
+        auctionGridInner.className = 'auction-giveaway-grid';
 
         filteredAuctions.forEach(auc => {
             const card = buildAuctionCard(auc);
@@ -582,20 +576,21 @@ function buildGiveawayCard(gw) {
 
     card.innerHTML = `
         <div class="card-thumbnail">
-            <div class="giveaway-badge" style="background:linear-gradient(135deg, #ff6b6b, #ee5a6f); padding:8px 15px; border-radius:20px; font-weight:800; font-size:0.75rem; position:absolute; top:15px; right:15px; z-index:10;">
+            <div class="giveaway-badge">
                 <i class="fa-solid fa-gift"></i> GIVEAWAY
+            </div>
             <img src="${gw.mediaUrls?.[0] || 'https://placehold.co/400x300?text=No+Image'}" alt="${gw.title}" style="cursor:zoom-in;">
         </div>
         <div class="card-info">
             <h3 class="card-title">${gw.title}</h3>
             <p class="card-short-desc">${gw.description || 'Enter to win this amazing ID!'}</p>
-            <div style="background:rgba(255,107,107,0.1); padding:12px; border-radius:8px; margin:10px 0; text-align:center;">
-                <div style="font-size:1.5rem; font-weight:800; color:#ff6b6b; margin-bottom:5px;">
+            <div class="giveaway-stats-box">
+                <div class="stat-value">
                     <i class="fa-solid fa-users"></i> ${participantCount}
                 </div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">Participants</div>
+                <div class="stat-label">Participants</div>
             </div>
-            <button class="bid-btn" style="background:linear-gradient(135deg, #ff6b6b, #ee5a6f);">
+            <button class="bid-btn enter-giveaway-btn">
                 <i class="fa-solid fa-ticket"></i> Enter Giveaway
             </button>
         </div>
