@@ -557,23 +557,21 @@ button {
     overflow: hidden;
     background: #000;
 }
-
-.view-tag {
+.view-tag{
     position: absolute;
     bottom: 12px;
     right: 14px;
     background: transparent;
-    border: none;
+    border-radius: 10px;
+    padding: 4px;
     border-bottom: 2px solid var(--accent);
     color: var(--accent);
     font-size: 0.72rem;
     font-weight: 700;
     padding-bottom: 2px;
     letter-spacing: 0.5px;
-    text-transform: lowercase;
     pointer-events: none;
     z-index: 5;
-    text-shadow: 0 0 8px var(--accent);
     box-shadow: 0 4px 10px -4px var(--accent);
     animation: neon-text-pulse 2s infinite ease-in-out;
     display: flex;
