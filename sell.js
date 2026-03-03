@@ -287,7 +287,7 @@ sellForm?.addEventListener('submit', async (e) => {
 
         // Redirect to WhatsApp
         setTimeout(() => {
-            const adminNum = "918078240018";
+            const adminNum = "919778205314";
             const msg = `👤 I am ${userName}\n` +
                 ` and I need to sell the ${idData.title} ID \n` +
                 ` with ${idData.playerInfo}.\n` +
