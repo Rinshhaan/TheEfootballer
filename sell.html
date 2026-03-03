@@ -35,38 +35,58 @@
                 <div class="form-header">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <h2>Submit Your ID</h2>
-                    <p>Fill in the details to list your ID on our shop.</p>
+                    <p>Fill in all the details below to list your ID on our shop.</p>
                 </div>
 
-                <form id="sellForm" class="sell-form">
+                <form id="sellForm" class="sell-form" novalidate>
                     <!-- Media Uploads -->
                     <div class="form-section">
                         <label class="section-label"><i class="fa-solid fa-images"></i> Proof of ID (Screenshots &
                             Video)</label>
                         <div class="upload-grid">
+                            <!-- Squad Screenshots -->
                             <div class="upload-item">
-                                <label for="idScreenshots" class="upload-box">
+                                <label for="idScreenshots" class="upload-box" id="screenshotsBox">
                                     <i class="fa-solid fa-camera"></i>
                                     <span>Squad Screenshots</span>
-                                    <input type="file" id="idScreenshots" accept="image/*" multiple required>
+                                    <input type="file" id="idScreenshots" accept="image/*" multiple>
                                 </label>
+                                <span class="field-error-msg" id="screenshotsError">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Please upload at least one squad
+                                    screenshot
+                                </span>
                                 <div id="previewScreenshots" class="media-preview"></div>
                             </div>
+
+                            <!-- Player Recording (Optional) -->
                             <div class="upload-item">
-                                <label for="idVideo" class="upload-box">
+                                <label for="idVideo" class="upload-box" id="videoBox">
                                     <i class="fa-solid fa-video"></i>
-                                    <span>Player Recording</span>
-                                    <small style="font-size:0.65rem; color:var(--text-muted);">(Optional, max 5MB)</small>
+                                    <span>Screen Recording</span>
                                     <input type="file" id="idVideo" accept="video/*">
                                 </label>
+                                <small
+                                    style="display:block; margin-top:5px; font-size:0.65rem; color:var(--text-muted); line-height:1.4;">
+                                    <i class="fa-solid fa-circle-info" style="color:var(--accent);"></i>
+                                    <strong>Optional</strong> — Max 7MB. Include all paid players, managers &amp; Konami
+                                    Linked section in the video.
+                                </small>
+                                <span class="field-error-msg" id="videoError">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Video exceeds 7MB limit
+                                </span>
                                 <div id="previewVideo" class="media-preview"></div>
                             </div>
+
+                            <!-- Konami Link Proof -->
                             <div class="upload-item">
-                                <label for="konamiProof" class="upload-box">
+                                <label for="konamiProof" class="upload-box" id="konamiBox">
                                     <i class="fa-solid fa-link"></i>
                                     <span>Konami Link Proof</span>
-                                    <input type="file" id="konamiProof" accept="image/*" required>
+                                    <input type="file" id="konamiProof" accept="image/*">
                                 </label>
+                                <span class="field-error-msg" id="konamiError">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Please upload Konami Link proof image
+                                </span>
                                 <div id="previewKonami" class="media-preview"></div>
                             </div>
                         </div>
@@ -74,35 +94,50 @@
 
                     <!-- Personal Info -->
                     <div class="form-group row-group">
-                        <div class="input-wrap">
-                            <label for="userName">User Name</label>
-                            <input type="text" id="userName" placeholder="Enter your name" required>
+                        <div class="input-wrap" id="userNameWrap">
+                            <label for="userName">Your Name</label>
+                            <input type="text" id="userName" placeholder="Enter your name">
+                            <span class="field-error-msg" id="userNameError">
+                                <i class="fa-solid fa-circle-exclamation"></i> Please enter a valid name
+                            </span>
                         </div>
-                        <div class="input-wrap">
+                        <div class="input-wrap" id="waNumberWrap">
                             <label for="waNumber">WhatsApp Number</label>
-                            <input type="tel" id="waNumber" placeholder="e.g. 91807..." required>
+                            <input type="tel" id="waNumber" placeholder="e.g. 918078240018">
+                            <span class="field-error-msg" id="waNumberError">
+                                <i class="fa-solid fa-circle-exclamation"></i> Enter a valid 10–15 digit WhatsApp number
+                            </span>
                         </div>
                     </div>
 
                     <!-- ID Details -->
-                    <div class="form-group">
+                    <div class="form-group" id="paidCardsWrap">
                         <label for="paidCards">Paid Players (Comma separated)</label>
-                        <textarea id="paidCards" placeholder="e.g. Bigtime Messi,Epic Neymar,Double booster Ronaldo..."
-                            required></textarea>
+                        <textarea id="paidCards"
+                            placeholder="e.g. Bigtime Messi, Epic Neymar, Double booster Ronaldo..."></textarea>
+                        <span class="field-error-msg" id="paidCardsError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Please list at least one paid player
+                        </span>
                     </div>
 
                     <div class="form-group">
                         <label>Number of Paid Players</label>
                         <div class="numeric-counter" id="paidCountCounter">
                             <button type="button" class="counter-btn" id="decrement">-</button>
-                            <input type="number" id="paidCountInput" value="0" min="0" required>
+                            <input type="number" id="paidCountInput" value="0" min="0">
                             <button type="button" class="counter-btn" id="increment">+</button>
                         </div>
+                        <span class="field-error-msg" id="paidCountError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Number of paid players must be at least 1
+                        </span>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="idPriceWrap">
                         <label for="idPrice">Your Expected Price (₹)</label>
-                        <input type="number" id="idPrice" placeholder="Enter amount" required>
+                        <input type="number" id="idPrice" placeholder="Enter amount">
+                        <span class="field-error-msg" id="idPriceError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Please enter a valid price
+                        </span>
                         <small class="price-note">Note: we only post the id if we are ok with the price of corresponding
                             ID.</small>
                     </div>
@@ -131,7 +166,8 @@
                         </div>
                         <h3>Successfully Submitted!</h3>
                         <p>Your ID details have been sent to our waiting list for review.</p>
-                        <p class="redirect-sub" style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--accent); font-weight: 600;">
+                        <p class="redirect-sub"
+                            style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--accent); font-weight: 600;">
                             <i class="fa-solid fa-spinner fa-spin"></i> Redirecting to WhatsApp for deal confirmation...
                         </p>
                         <div class="success-progress"></div>
@@ -162,6 +198,7 @@
         </a>
     </nav>
 
+    <script src="geo-block.js"></script>
     <script type="module" src="sell.js"></script>
 </body>
 
