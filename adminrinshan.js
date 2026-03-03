@@ -128,6 +128,45 @@ let loadedStates = {
     giveaways: false
 };
 
+// ── Fullscreen Media Viewer ─────────────────────────────
+const mediaViewer = document.getElementById('mediaViewer');
+const mediaViewerInner = document.getElementById('mediaViewerInner');
+const mediaViewerCaption = document.getElementById('mediaViewerCaption');
+
+function openMediaViewer(url, isVideo, caption) {
+    mediaViewerInner.innerHTML = '';
+    if (isVideo) {
+        const v = document.createElement('video');
+        v.src = url;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        v.style.cssText = 'max-width:100%; max-height:85vh; border-radius:12px;';
+        mediaViewerInner.appendChild(v);
+    } else {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = caption || 'Full size';
+        img.style.cssText = 'max-width:100%; max-height:85vh; border-radius:12px; object-fit:contain;';
+        mediaViewerInner.appendChild(img);
+    }
+    mediaViewerCaption.textContent = caption || '';
+    mediaViewer.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMediaViewer() {
+    const v = mediaViewerInner.querySelector('video');
+    if (v) v.pause();
+    mediaViewerInner.innerHTML = '';
+    mediaViewer.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+document.getElementById('mediaViewerClose')?.addEventListener('click', closeMediaViewer);
+mediaViewer?.addEventListener('click', (e) => { if (e.target === mediaViewer) closeMediaViewer(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mediaViewer?.style.display !== 'none') closeMediaViewer(); });
+
 // ── Data Fetchers ──────────────────────────────────────
 function initFetch(path, containerId, templateFn, stateKey) {
     const container = document.getElementById(containerId);
@@ -161,8 +200,7 @@ function initFetch(path, containerId, templateFn, stateKey) {
             updateHeroStats(rawData[stateKey]);
         }
         if (stateKey === 'giveaways') {
-            // Giveaways are displayed in auction tab, so trigger search update
-            applySearch();
+            updateGiveawayStats(rawData[stateKey]);
         }
 
         applySearch(); // Update view whenever data changes
@@ -204,6 +242,21 @@ function updateHeroStats(slides) {
     `;
 }
 
+function updateGiveawayStats(giveaways) {
+    const statsContainer = document.getElementById('giveawayStatsSummary');
+    if (!statsContainer) return;
+    const active = giveaways.filter(g => !g.endTime || g.endTime > Date.now()).length;
+    const totalParticipants = giveaways.reduce((acc, g) => acc + (g.participantCount || 0), 0);
+    statsContainer.innerHTML = `
+        <div class="stat-pill">
+            <i class="fa-solid fa-gift"></i> Active: <strong>${active}</strong>
+        </div>
+        <div class="stat-pill">
+            <i class="fa-solid fa-users"></i> Participants: <strong>${totalParticipants}</strong>
+        </div>
+    `;
+}
+
 function parsePrice(p) {
     if (!p) return 0;
     return parseInt(p.toString().replace(/[^0-9]/g, '')) || 0;
@@ -226,7 +279,8 @@ function applySearch() {
     const tabMap = {
         'waiting': { key: 'waiting_list', container: 'waitingList', tpl: waitingTpl },
         'current': { key: 'products', container: 'currentList', tpl: currentTpl },
-        'auction-manage': { key: 'auction_ids', container: 'auctionManageList', tpl: auctionManageTpl, includeGiveaways: true },
+        'auction-manage': { key: 'auction_ids', container: 'auctionManageList', tpl: auctionManageTpl },
+        'giveaway': { key: 'giveaways', container: 'giveawayManageList', tpl: giveawayTpl },
         'sold': { key: 'sold_out', container: 'soldList', tpl: soldTpl },
         'hero': { key: 'hero_slides', container: 'heroListContainer', tpl: heroTpl }
     };
@@ -238,9 +292,7 @@ function applySearch() {
     const containerId = currentTab.container;
     const templateFn = currentTab.tpl;
 
-    if (!loadedStates[activeKey] || (currentTab.includeGiveaways && !loadedStates['giveaways'])) {
-        return; // Retain skeleton loaders until fully loaded
-    }
+    if (!loadedStates[activeKey]) return; // Retain skeleton loaders until fully loaded
 
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -256,17 +308,20 @@ function applySearch() {
         return match;
     });
 
-    // Filter auctions by ended status if on auction tab
+    // Filter auctions by ended status
     if (activeKey === 'auction_ids') {
         const showEnded = document.getElementById('showEndedAuctions')?.checked || false;
-        list = list.filter(auction => {
-            const isExpired = (auction.endTime || 0) < Date.now();
-            return showEnded ? true : !isExpired; // If checkbox checked, show all; otherwise only active
-        });
+        list = list.filter(a => showEnded ? true : (a.endTime || 0) > Date.now());
+    }
+
+    // Filter giveaways by ended status
+    if (activeKey === 'giveaways') {
+        const showEnded = document.getElementById('showEndedGiveaways')?.checked || false;
+        list = list.filter(g => showEnded ? true : (!g.endTime || g.endTime > Date.now()));
     }
 
     if (list.length === 0) {
-        container.innerHTML = '<p class="empty-msg">No matching items found.</p>';
+        container.innerHTML = '<p class="empty-msg">No items found.</p>';
         if (activeKey === 'sold_out') revEl.innerText = '₹0';
         return;
     }
@@ -277,20 +332,14 @@ function applySearch() {
         if (activeKey === 'sold_out') totalRev += parsePrice(item.price);
     });
 
-    // Add giveaways to auction tab if enabled
-    if (currentTab.includeGiveaways && rawData.giveaways) {
-        rawData.giveaways.forEach(gw => {
-            container.appendChild(giveawayTpl(gw));
-        });
-    }
-
     if (activeKey === 'sold_out') revEl.innerText = `₹${totalRev.toLocaleString()}`;
 }
 
 searchInp.addEventListener('input', applySearch);
 
-// Toggle ended auctions display
+// Toggle ended items display
 document.getElementById('showEndedAuctions')?.addEventListener('change', applySearch);
+document.getElementById('showEndedGiveaways')?.addEventListener('change', applySearch);
 
 // ── Templates ──────────────────────────────────────────
 const waitingTpl = (item) => buildAdminCard(item, 'waiting_list', ['approve', 'delete']);
@@ -556,27 +605,13 @@ const auctionManageTpl = (item) => {
     const urls = item.mediaUrls || [];
     let mediaHtml = '';
     if (urls.length > 0) {
-        mediaHtml = `
-            <div class="carousel-container" style="height:100%;">
-                <div class="carousel-track" style="height:100%;">
-                    ${urls.map((url, idx) => {
-            const isVid = (typeof url === 'string' && (url.includes('video/') || url.includes('.mp4') || url.startsWith('data:video')));
-            return isVid
-                ? `<video src="${url}" muted loop playsinline class="carousel-item ${idx === 0 ? 'active' : ''}" style="height:100%; object-fit:cover;"></video>`
-                : `<img src="${url}" alt="Media ${idx + 1}" class="carousel-item ${idx === 0 ? 'active' : ''}" style="height:100%; object-fit:cover;">`;
-        }).join('')}
-                </div>
-                ${urls.length > 1 ? `
-                    <button class="carousel-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="carousel-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="carousel-dots">
-                        ${urls.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        `;
+        const firstUrl = urls[0];
+        const isVid = (typeof firstUrl === 'string' && (firstUrl.includes('video/') || firstUrl.includes('.mp4') || firstUrl.startsWith('data:video')));
+        mediaHtml = isVid
+            ? `<video src="${firstUrl}" muted loop playsinline style="width:100%; height:100%; object-fit:cover; cursor:zoom-in; border-radius:10px;"></video>`
+            : `<img src="${firstUrl}" alt="Media" style="width:100%; height:100%; object-fit:cover; cursor:zoom-in; border-radius:10px;">`;
     } else {
-        mediaHtml = `<div class="carousel-container"><img src="https://placehold.co/400x300?text=No+Media" style="height:100%; object-fit:cover;"></div>`;
+        mediaHtml = `<div style="width:100%; height:100%; background:rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; border-radius:10px;"><img src="https://placehold.co/400x300?text=No+Media" style="height:100%; object-fit:cover;"></div>`;
     }
 
     // ── Data Prep ────────────────────────────────────────
@@ -706,25 +741,12 @@ const auctionManageTpl = (item) => {
         card.querySelector(`#admin-timer-${item.id}`).innerHTML = '<span style="color:#ff0055;">ENDED</span>';
     }
 
-    // Initialize Carousel
-    if (urls.length > 1) {
-        let currentIdx = 0;
-        const track = card.querySelector('.carousel-track');
-        const dots = card.querySelectorAll('.dot');
-        const next = card.querySelector('.next-btn');
-        const prev = card.querySelector('.prev-btn');
-
-        const updateDots = (idx) => dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        const scrollToSlide = (idx) => {
-            currentIdx = idx;
-            const slideWidth = track.offsetWidth;
-            track.scrollTo({ left: idx * slideWidth, behavior: 'smooth' });
-            updateDots(idx);
-        };
-
-        next.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx + 1) % urls.length; scrollToSlide(currentIdx); };
-        prev.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx - 1 + urls.length) % urls.length; scrollToSlide(currentIdx); };
-    }
+    // Hover Video Logic
+    const videos = card.querySelectorAll('video');
+    videos.forEach(v => {
+        card.querySelector('.auction-card-media').addEventListener('mouseenter', () => v.play().catch(() => { }));
+        card.querySelector('.auction-card-media').addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
+    });
 
     return card;
 };
@@ -738,27 +760,13 @@ function buildAdminCard(item, fromPath, actions) {
     const urls = item.mediaUrls || [];
 
     if (urls.length > 0) {
-        mediaHtml = `
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    ${urls.map((url, idx) => {
-            const isVid = (typeof url === 'string' && (url.includes('video/') || url.includes('.mp4') || url.startsWith('data:video')));
-            return isVid
-                ? `<video src="${url}" muted loop playsinline class="carousel-item ${idx === 0 ? 'active' : ''}"></video>`
-                : `<img src="${url}" alt="Media ${idx + 1}" class="carousel-item ${idx === 0 ? 'active' : ''}">`;
-        }).join('')}
-                </div>
-                ${urls.length > 1 ? `
-                    <button class="carousel-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="carousel-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="carousel-dots">
-                        ${urls.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        `;
+        const firstUrl = urls[0];
+        const isVid = (typeof firstUrl === 'string' && (firstUrl.includes('video/') || firstUrl.includes('.mp4') || firstUrl.startsWith('data:video')));
+        mediaHtml = isVid
+            ? `<video src="${firstUrl}" muted loop playsinline style="width:100%; height:200px; object-fit:cover; cursor:zoom-in; border-radius:10px;"></video>`
+            : `<img src="${firstUrl}" alt="Media" style="width:100%; height:200px; object-fit:cover; cursor:zoom-in; border-radius:10px;">`;
     } else {
-        mediaHtml = `<div class="carousel-container"><img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder"></div>`;
+        mediaHtml = `<div style="width:100%; height:200px; background:rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; border-radius:10px;"><img src="https://placehold.co/400x300?text=No+Media" style="height:100%; object-fit:cover;"></div>`;
     }
 
     const isSold = fromPath === 'sold_out' || item.status === 'sold' || item.stockOut;
@@ -801,62 +809,7 @@ function buildAdminCard(item, fromPath, actions) {
         </div>
     `;
 
-    // Carousel Funcitonality
-    if (urls.length > 1) {
-        let currentIdx = 0;
-        const track = cardWrap.querySelector('.carousel-track');
-        const dots = cardWrap.querySelectorAll('.dot');
-        const next = cardWrap.querySelector('.next-btn');
-        const prev = cardWrap.querySelector('.prev-btn');
 
-        const updateDots = (idx) => {
-            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        };
-
-        const scrollToSlide = (idx) => {
-            currentIdx = idx;
-            const slideWidth = track.offsetWidth;
-            track.scrollTo({ left: idx * slideWidth, behavior: 'smooth' });
-            updateDots(idx);
-        };
-
-        next.onclick = (e) => {
-            e.stopPropagation();
-            currentIdx = (currentIdx + 1) % urls.length;
-            scrollToSlide(currentIdx);
-        };
-
-        prev.onclick = (e) => {
-            e.stopPropagation();
-            currentIdx = (currentIdx - 1 + urls.length) % urls.length;
-            scrollToSlide(currentIdx);
-        };
-
-        // Update dots on manual scroll
-        track.onscroll = () => {
-            const idx = Math.round(track.scrollLeft / track.offsetWidth);
-            if (idx !== currentIdx) {
-                currentIdx = idx;
-                updateDots(idx);
-            }
-        };
-
-        // Play/Pause videos on scroll
-        const items = track.querySelectorAll('.carousel-item');
-        track.addEventListener('scroll', () => {
-            items.forEach((it, i) => {
-                if (it.tagName === 'VIDEO') {
-                    const idx = Math.round(track.scrollLeft / track.offsetWidth);
-                    if (i === idx) {
-                        it.play().catch(() => { });
-                    } else {
-                        it.pause();
-                        it.currentTime = 0;
-                    }
-                }
-            });
-        });
-    }
 
     // Add Admin Actions
     const footerActions = cardWrap.querySelector('.footer-actions');
@@ -884,18 +837,20 @@ function buildAdminCard(item, fromPath, actions) {
         footerActions.appendChild(btn);
     });
 
-    // Hover Video support (for the currently active slide)
-    cardWrap.addEventListener('mouseenter', () => {
-        const video = cardWrap.querySelector('.carousel-item.active');
-        if (video && video.tagName === 'VIDEO') video.play().catch(() => { });
-    });
-    cardWrap.addEventListener('mouseleave', () => {
-        const video = cardWrap.querySelector('.carousel-item.active');
-        if (video && video.tagName === 'VIDEO') {
-            video.pause();
-            video.currentTime = 0;
+    // Media Handlers
+    cardWrap.querySelector('img, video')?.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+            e.stopPropagation();
+            openMediaViewer(target.src, target.tagName === 'VIDEO', item.title || '');
         }
     });
+
+    const v = cardWrap.querySelector('video');
+    if (v) {
+        cardWrap.addEventListener('mouseenter', () => v.play().catch(() => { }));
+        cardWrap.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
+    }
 
     return cardWrap;
 }
@@ -1107,7 +1062,7 @@ initFetch('products', 'currentList', currentTpl, 'products');
 initFetch('auctions', 'auctionManageList', auctionManageTpl, 'auction_ids');
 initFetch('sold_out', 'soldList', soldTpl, 'sold_out');
 initFetch('hero_slides', 'heroListContainer', heroTpl, 'hero_slides');
-initFetch('giveaways', 'auctionManageList', giveawayTpl, 'giveaways');
+initFetch('giveaways', 'giveawayManageList', giveawayTpl, 'giveaways');
 
 // ── Hero Slide Modals ──────────────────────────
 function openEditHeroModal(item) {
@@ -1596,17 +1551,9 @@ document.getElementById('openAuctionBtn')?.addEventListener('click', () => {
 
 // ── Global Full Screen Media Viewer ─────────────────────
 document.addEventListener('click', (e) => {
-    if (e.target.closest('.edit-media-item') && (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO')) {
-        if (!document.fullscreenElement) {
-            if (e.target.requestFullscreen) {
-                e.target.requestFullscreen();
-            } else if (e.target.webkitRequestFullscreen) {
-                e.target.webkitRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
+    const item = e.target.closest('.edit-media-item');
+    if (item && (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO')) {
+        const isVid = e.target.tagName === 'VIDEO';
+        openMediaViewer(e.target.src, isVid, 'Item Media');
     }
 });
