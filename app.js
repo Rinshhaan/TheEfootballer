@@ -171,18 +171,17 @@ function renderRow(rowId, products) {
 // 5.  BUILD A CARD
 // ============================================================
 function buildCard(product) {
-    const urls = product.mediaUrls || [];
-    let mediaHtml = '';
     const isSold = product.stockOut || product.status === 'sold';
-
-    if (urls.length > 0) {
-        const firstUrl = urls[0];
+    // Single Media Display (Reverted from Fading)
+    const firstUrl = (product.mediaUrls && product.mediaUrls[0]) || '';
+    let mediaHtml = '';
+    if (firstUrl) {
         const isVid = (typeof firstUrl === 'string' && (firstUrl.includes('video/') || firstUrl.includes('.mp4') || firstUrl.startsWith('data:video')));
         mediaHtml = isVid
-            ? `<video src="${firstUrl}" muted loop playsinline style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;"></video>`
-            : `<img src="${firstUrl}" alt="${product.title}" style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;">`;
+            ? `<video src="${firstUrl}" muted loop playsinline></video>`
+            : `<img src="${firstUrl}" alt="${product.title}">`;
     } else {
-        mediaHtml = `<img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder" style="width:100%; height:100%; object-fit:cover;">`;
+        mediaHtml = `<img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder">`;
     }
 
     const card = document.createElement('div');
@@ -199,15 +198,12 @@ function buildCard(product) {
             <div class="view-tag">view <i class="fa-solid fa-arrow-right"></i></div>
         </div>`;
 
-    // Hover Video Logic
-    const videos = card.querySelectorAll('video');
-    videos.forEach(v => {
-        card.addEventListener('mouseenter', () => v.play().catch(() => { }));
-        card.addEventListener('mouseleave', () => {
-            v.pause();
-            v.currentTime = 0;
-        });
-    });
+    // Hover Video Preview
+    const mainMedia = card.querySelector('.card-thumbnail video');
+    if (mainMedia) {
+        card.addEventListener('mouseenter', () => mainMedia.play().catch(() => { }));
+        card.addEventListener('mouseleave', () => { mainMedia.pause(); mainMedia.currentTime = 0; });
+    }
 
     card.addEventListener('click', () => openModal(product));
 
@@ -260,7 +256,10 @@ searchInput && searchInput.addEventListener('input', (e) => {
     }
 
     function goTo(idx) {
-        if (total <= 1) return;
+        if (total <= 1) {
+            track.style.transform = `translateX(0)`;
+            return;
+        }
         current = ((idx % total) + total) % total;
         track.style.transform = `translateX(-${current * 100}%)`;
         dotsEl.querySelectorAll('.hero-dot').forEach((d, i) =>
@@ -297,7 +296,7 @@ searchInput && searchInput.addEventListener('input', (e) => {
         const slidesData = Object.keys(data).map(k => ({
             id: k,
             ...data[k],
-            img: data[k].imageUrl // Map imageUrl to img for the template
+            img: data[k].imageUrl || data[k].img // Fallback to 'img' for older slides
         }));
 
         // Sort by timestamp if available
@@ -318,7 +317,7 @@ searchInput && searchInput.addEventListener('input', (e) => {
             const slide = document.createElement('a');
             slide.className = 'hero-slide';
             if (s.link) slide.href = s.link;
-            if (s.img) slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(${s.img})`;
+            if (s.img) slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url("${s.img}")`;
 
             slide.innerHTML = `
                 <div class="hero-slide-inner">
