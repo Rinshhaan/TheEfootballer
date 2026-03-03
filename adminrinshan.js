@@ -44,8 +44,7 @@ const loginPass = document.getElementById('adminPass');
 const loginErr = document.getElementById('loginError');
 const mainContent = document.getElementById('adminMainContent');
 
-// Correct SHA-256 hash for 'admin123'
-const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+const ADMIN_HASH = "5631806d98e8d15f9806ac14314a368f0ed98a3470a90e6f5f9a6f67499966ae";
 
 const authBtnText = document.getElementById('authBtnText');
 const adminAuthBtn = document.getElementById('adminAuthBtn');
