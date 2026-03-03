@@ -253,6 +253,18 @@
         </a>
     </nav>
 
+    <div id="toastContainer"></div>
+
+    <!-- ══ MEDIA FULLSCREEN VIEWER ══ -->
+    <div id="mediaViewer" class="media-viewer-overlay" role="dialog" aria-modal="true" style="display:none;">
+        <button id="mediaViewerClose" class="media-viewer-close" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="media-viewer-inner" id="mediaViewerInner"></div>
+        <div class="media-viewer-caption" id="mediaViewerCaption"></div>
+    </div>
+
+    <script src="geo-block.js"></script>
     <script type="module" src="buy.js"></script>
 </body>
 
