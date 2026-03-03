@@ -24,6 +24,47 @@ let currentSlideIdx = 0;
 let priceMin = 0;
 let priceMax = 5000;
 
+// ── Fullscreen Media Viewer ─────────────────────────────
+const mediaViewer = document.getElementById('mediaViewer');
+const mediaViewerInner = document.getElementById('mediaViewerInner');
+const mediaViewerCaption = document.getElementById('mediaViewerCaption');
+
+function openMediaViewer(url, isVideo, caption) {
+    if (!mediaViewer || !mediaViewerInner) return;
+    mediaViewerInner.innerHTML = '';
+    if (isVideo) {
+        const v = document.createElement('video');
+        v.src = url;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        v.style.cssText = 'max-width:100%; max-height:85vh; border-radius:12px;';
+        mediaViewerInner.appendChild(v);
+    } else {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = caption || 'Full size';
+        img.style.cssText = 'max-width:100%; max-height:85vh; border-radius:12px; object-fit:contain; cursor:zoom-out;';
+        mediaViewerInner.appendChild(img);
+    }
+    mediaViewerCaption.textContent = caption || '';
+    mediaViewer.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMediaViewer() {
+    if (!mediaViewer) return;
+    const v = mediaViewerInner.querySelector('video');
+    if (v) v.pause();
+    mediaViewerInner.innerHTML = '';
+    mediaViewer.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+document.getElementById('mediaViewerClose')?.addEventListener('click', closeMediaViewer);
+mediaViewer?.addEventListener('click', (e) => { if (e.target === mediaViewer) closeMediaViewer(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mediaViewer?.style.display !== 'none') closeMediaViewer(); });
+
 // ── Price Dropdown Toggle ────────────────────────────────
 priceDropdownBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -340,27 +381,13 @@ function buildCard(product) {
     const isSold = product.stockOut || product.status === 'sold';
 
     if (urls.length > 0) {
-        mediaHtml = `
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    ${urls.map((url, idx) => {
-            const isVid = (typeof url === 'string' && (url.includes('video/') || url.includes('.mp4') || url.startsWith('data:video')));
-            return isVid
-                ? `<video src="${url}" muted loop playsinline class="carousel-item ${idx === 0 ? 'active' : ''}"></video>`
-                : `<img src="${url}" alt="Media ${idx + 1}" class="carousel-item ${idx === 0 ? 'active' : ''}" loading="lazy">`;
-        }).join('')}
-                </div>
-                ${urls.length > 1 ? `
-                    <button class="carousel-btn prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="carousel-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                    <div class="carousel-dots">
-                        ${urls.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}"></span>`).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        `;
+        const firstUrl = urls[0];
+        const isVid = (typeof firstUrl === 'string' && (firstUrl.includes('video/') || firstUrl.includes('.mp4') || firstUrl.startsWith('data:video')));
+        mediaHtml = isVid
+            ? `<video src="${firstUrl}" muted loop playsinline style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;"></video>`
+            : `<img src="${firstUrl}" alt="${product.title}" style="width:100%; height:100%; object-fit:cover; cursor:zoom-in;">`;
     } else {
-        mediaHtml = `<div class="carousel-container"><img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder"></div>`;
+        mediaHtml = `<img src="https://placehold.co/400x300?text=No+Media" alt="Placeholder" style="width:100%; height:100%; object-fit:cover;">`;
     }
 
     const card = document.createElement('div');
@@ -374,73 +401,13 @@ function buildCard(product) {
             <h3 class="card-title">${product.title}</h3>
             <p class="card-short-desc"><strong>Players:</strong> ${product.playerInfo || 'N/A'}</p>
             <p class="card-price">${product.price || 'Contact us'}</p>
+            <div class="view-tag">view <i class="fa-solid fa-arrow-right"></i></div>
         </div>`;
-
-    // Carousel Logic
-    if (urls.length > 1) {
-        let currentIdx = 0;
-        const track = card.querySelector('.carousel-track');
-        const dots = card.querySelectorAll('.dot');
-        const next = card.querySelector('.next-btn');
-        const prev = card.querySelector('.prev-btn');
-
-        const updateDots = (idx) => {
-            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        };
-
-        const scrollToSlide = (idx) => {
-            currentIdx = idx;
-            const slideWidth = track.offsetWidth;
-            track.scrollTo({ left: idx * slideWidth, behavior: 'smooth' });
-            updateDots(idx);
-        };
-
-        next.onclick = (e) => {
-            e.stopPropagation();
-            currentIdx = (currentIdx + 1) % urls.length;
-            scrollToSlide(currentIdx);
-        };
-
-        prev.onclick = (e) => {
-            e.stopPropagation();
-            currentIdx = (currentIdx - 1 + urls.length) % urls.length;
-            scrollToSlide(currentIdx);
-        };
-
-        track.onscroll = () => {
-            const idx = Math.round(track.scrollLeft / track.offsetWidth);
-            if (idx !== currentIdx) {
-                currentIdx = idx;
-                updateDots(idx);
-            }
-        };
-
-        // Sync Video Controls with Scroll
-        const items = track.querySelectorAll('.carousel-item');
-        track.addEventListener('scroll', () => {
-            items.forEach((it) => {
-                if (it.tagName === 'VIDEO') {
-                    const rect = it.getBoundingClientRect();
-                    const trackRect = track.getBoundingClientRect();
-                    const isVidVisible = (rect.left >= trackRect.left - 50 && rect.right <= trackRect.right + 50);
-                    if (isVidVisible) it.play();
-                    else { it.pause(); it.currentTime = 0; }
-                }
-            });
-        });
-    }
 
     // Hover Video Logic
     const videos = card.querySelectorAll('video');
     videos.forEach(v => {
-        card.addEventListener('mouseenter', () => {
-            const rect = v.getBoundingClientRect();
-            const track = v.closest('.carousel-track');
-            if (track) {
-                const trackRect = track.getBoundingClientRect();
-                if (rect.left >= trackRect.left - 50 && rect.right <= trackRect.right + 50) v.play();
-            } else v.play();
-        });
+        card.addEventListener('mouseenter', () => v.play().catch(() => { }));
         card.addEventListener('mouseleave', () => {
             v.pause();
             v.currentTime = 0;
@@ -448,6 +415,16 @@ function buildCard(product) {
     });
 
     card.addEventListener('click', () => openModal(product));
+
+    // Media Click Fullscreen (Robust Delegation)
+    card.querySelector('.card-thumbnail')?.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent openModal
+        const media = e.currentTarget.querySelector('img, video');
+        if (media) {
+            openMediaViewer(media.src, media.tagName === 'VIDEO', product.title || '');
+        }
+    });
+
     return card;
 }
 
@@ -478,8 +455,13 @@ function openModal(product) {
         const slide = document.createElement('div');
         slide.className = `carousel-slide${i === 0 ? ' active' : ''}`;
         slide.innerHTML = isVid
-            ? `<video src="${url}" controls controlsList="nodownload" playsinline ondblclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();"></video>`
-            : `<img src="${url}" alt="Slide ${i + 1}" style="cursor:zoom-in" onclick="if(this.requestFullscreen) this.requestFullscreen(); else if(this.webkitRequestFullscreen) this.webkitRequestFullscreen();">`;
+            ? `<video src="${url}" controls controlsList="nodownload" playsinline></video>`
+            : `<img src="${url}" alt="Slide ${i + 1}" style="cursor:zoom-in">`;
+
+        slide.onclick = (e) => {
+            e.stopPropagation();
+            openMediaViewer(url, isVid, product.title || '');
+        };
         carouselEl.appendChild(slide);
     });
 
@@ -602,8 +584,7 @@ function buildGiveawayCard(gw) {
         <div class="card-thumbnail">
             <div class="giveaway-badge" style="background:linear-gradient(135deg, #ff6b6b, #ee5a6f); padding:8px 15px; border-radius:20px; font-weight:800; font-size:0.75rem; position:absolute; top:15px; right:15px; z-index:10;">
                 <i class="fa-solid fa-gift"></i> GIVEAWAY
-            </div>
-            <img src="${gw.mediaUrls?.[0] || 'https://placehold.co/400x300?text=No+Image'}" alt="${gw.title}">
+            <img src="${gw.mediaUrls?.[0] || 'https://placehold.co/400x300?text=No+Image'}" alt="${gw.title}" style="cursor:zoom-in;">
         </div>
         <div class="card-info">
             <h3 class="card-title">${gw.title}</h3>
@@ -627,6 +608,15 @@ function buildGiveawayCard(gw) {
 
     card.onclick = () => openGiveawayModal(gw);
 
+    // Giveaway Media Click Fullscreen (Delegation)
+    card.querySelector('.card-thumbnail')?.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+            e.stopPropagation();
+            openMediaViewer(target.src, target.tagName === 'VIDEO', gw.title || '');
+        }
+    });
+
     return card;
 }
 
@@ -645,7 +635,7 @@ function buildAuctionCard(auc) {
     card.innerHTML = `
         <div class="card-thumbnail">
             ${isExpired ? '<div class="sold-out-ribbon">ENDED</div>' : '<div class="auction-live-badge"><i class="fa-solid fa-circle"></i> LIVE</div>'}
-            <img src="${auc.mediaUrls?.[0] || 'https://placehold.co/400x300?text=No+Image'}" alt="${auc.title}">
+            <img src="${auc.mediaUrls?.[0] || 'https://placehold.co/400x300?text=No+Image'}" alt="${auc.title}" style="cursor:zoom-in;">
         </div>
         <div class="card-info">
             <h3 class="card-title">${auc.title}</h3>
@@ -693,6 +683,15 @@ function buildAuctionCard(auc) {
 
     card.onclick = () => openAuctionModal(auc);
 
+    // Auction Media Click Fullscreen (Delegation)
+    card.querySelector('.card-thumbnail')?.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+            e.stopPropagation();
+            openMediaViewer(target.src, target.tagName === 'VIDEO', auc.title || '');
+        }
+    });
+
     return card;
 }
 
@@ -719,7 +718,7 @@ function openAuctionModal(auc) {
                         <div class="rich-carousel-track" id="richCarouselTrack">
                             ${(auc.mediaUrls || []).map((url, i) => `
                                 <div class="rich-slide ${i === 0 ? 'active' : ''}">
-                                    <img src="${url}" alt="ID Screen ${i + 1}">
+                                    <img src="${url}" alt="ID Screen ${i + 1}" style="cursor:zoom-in;" onclick="event.stopPropagation(); window.openRichMediaViewer('${url}', false, '${auc.title.replace(/'/g, "\\'")}')">
                                 </div>
                             `).join('')}
                         </div>
