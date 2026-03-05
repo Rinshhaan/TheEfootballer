@@ -353,7 +353,7 @@ const giveawayTpl = (item) => {
 
     const urls = item.mediaUrls || [];
     let mediaHtml = urls.length > 0
-        ? `<img src="${urls[0]}" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">`
+        ? `<img src="${urls[0]}" style="width:100%; height:100%; object-fit:fill; border-radius:10px;">`
         : `<div style="width:100%; height:200px; background:rgba(255,107,107,0.1); display:flex; align-items:center; justify-content:center; border-radius:10px;"><i class="fa-solid fa-gift" style="font-size:3rem; color:#ff6b6b;"></i></div>`;
 
     card.innerHTML = `
